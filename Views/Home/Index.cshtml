@@ -3,20 +3,24 @@
     ViewBag.PageName = "Home";
 }
 
-<div class="container">
+<div class="container-fluid">
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">基础配置<small></small></h1>
     </div>
 
-    <form class="form-group">
-        <label for="SqlServerConnectionString">数据库连接字符串</label>
-        <input type="text" class="form-control" id="SqlServerConnectionString" aria-describedby="SqlServerConnectionString" placeholder="请输入数据库连接字符串">
-    </form>
+    <div class="card shadow">
+        <div class="card-body">
+            <form class="form-group row">
+                <label class="col-sm-2 col-form-label" for="ConnectionString">数据库连接字符串</label>
+                <textarea class="col-sm-10 form-control" rows="5" id="ConnectionString" aria-describedby="ConnectionString" placeholder="请输入数据库连接字符串"></textarea>
+            </form>
 
-    <button type="submit" class="btn btn-primary float-right ml-2" id="Save">保存</button>
-    <button type="submit" class="btn btn-primary float-right" id="Validate">验证</button>
+            <button type="submit" class="btn btn-primary float-right ml-2" id="Save">保存</button>
+            <button type="submit" class="btn btn-primary float-right" id="Validate">验证</button>
 
+        </div>
+    </div>
 </div>
 
 @section Scripts
@@ -27,10 +31,10 @@
         page = {
             $Save: $("#Save"),
             $Validate: $("#Validate"),
-            $SqlServerConnectionString: $("#SqlServerConnectionString"),
+            $ConnectionString: $("#ConnectionString"),
 
             Save: function () {
-                var connectionString = page.$SqlServerConnectionString.val();
+                var connectionString = page.$ConnectionString.val();
 
                 if (connectionString === null || connectionString === "") {
 
@@ -45,17 +49,11 @@
                 site.app.notify.success("保存成功");
             },
 
-            ValidateSqlServerConnectionString: function () {
+            ValidateConnectionString: function () {
 
-                var connectionString = page.$SqlServerConnectionString.val();
+                var connectionString = page.$ConnectionString.val();
 
-                //if (connectionString === null || connectionString === "") {
-                //    site.app.notify.error("数据库连接字符串不能为空");
-
-                //    return false;
-                //}
-
-                $.post(globalSetting.baseUrl + "Home/ValidateSqlServerConnection", { SqlServerConnectionString: connectionString }, function (result) {
+                $.post(site.app.setting.baseUrl + "/ValidateConnectionString", { connectionString: connectionString }, function (result) {
                     if (result.errorCode === site.app.setting.noneErrorCode) {
                         site.app.notify.success("验证成功");
 
@@ -74,14 +72,14 @@
                 });
 
                 page.$Validate.click(function () {
-                    page.ValidateSqlServerConnectionString();
+                    page.ValidateConnectionString();
                 });
 
                 //获取之前保存到本地浏览器的数据库连接字符串
                 var connectionString = localStorage.getItem(site.app.setting.key_SqlServerConnectionStrig);
 
                 if (connectionString !== null || connectionString !== "") {
-                    page.$SqlServerConnectionString.val(connectionString);
+                    page.$ConnectionString.val(connectionString);
                 }
             }
         };

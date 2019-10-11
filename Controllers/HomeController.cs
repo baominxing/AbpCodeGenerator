@@ -21,8 +21,6 @@ namespace ABPCodeGenerator.Controllers
 
         public IActionResult Index()
         {
-            var connectionString = AppConfig.SqlServerConnectionString;
-
             return View();
         }
 
@@ -44,15 +42,14 @@ namespace ABPCodeGenerator.Controllers
         /// <returns></returns>
         [HttpPost]
         [ParameterNullOrEmptyFilter]
-        public IActionResult ValidateSqlServerConnection(ValidateSqlServerConnectionDto input)
+        public IActionResult ValidateConnectionString(string connectionString)
         {
             var errorMessage = string.Empty;
             var errorCode = AppConfig.ErrorCodes.NONE;
-            var sqlServerConnectionString = (string)input.SqlServerConnectionString;
 
             try
             {
-                using (var conn = new SqlConnection(sqlServerConnectionString))
+                using (var conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
                 }

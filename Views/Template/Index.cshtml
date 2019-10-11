@@ -3,86 +3,167 @@
     ViewBag.PageName = "Template";
 }
 
-<div class="container">
+<div class="container-fluid">
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">生成模板<small></small></h1>
     </div>
 
-    <form class="form-group">
-        <label for="SqlServerConnectionString">数据库连接字符串</label>
-        <input type="text" class="form-control" id="SqlServerConnectionString" aria-describedby="SqlServerConnectionString" placeholder="请输入数据库连接字符串">
-    </form>
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label" for="exampleFormControlSelect1">数据库表</label>
+                <select class="col-md-10 form-control" id="SelectDatabaseTableName">
+                </select>
+            </div>
 
-    <button type="submit" class="btn btn-primary float-right ml-2" id="Save">保存</button>
-    <button type="submit" class="btn btn-primary float-right" id="Validate">验证</button>
+            <button type="submit" class="btn btn-primary float-right" id="Search">查询</button>
+        </div>
+    </div>
+
+
+    <div class="card mt-3 shadow">
+        <div class="card-body">
+            <table class="table table-bordered table-hover w-100" id="Table"></table>
+        </div>
+    </div>
 
 </div>
 
 @section Scripts
 {
     <script>
-        var page = null;
+        var page, connectionString = null;
 
         page = {
-            $Save: $("#Save"),
-            $Validate: $("#Validate"),
-            $SqlServerConnectionString: $("#SqlServerConnectionString"),
+            $SelectDatabaseTableName: $("#SelectDatabaseTableName"),
+            $SelectedDatabaseTableName: $("#SelectDatabaseTableName option:selected"),
+            $Search: $("#Search"),
+            $Table: $("#Table"),
+            DataTable: null,
 
-            Save: function () {
-                var connectionString = page.$SqlServerConnectionString.val();
+            ListDatabaseTableName: function () {
+                //获取之前保存到本地浏览器的数据库连接字符串
+                connectionString = localStorage.getItem(site.app.setting.key_SqlServerConnectionStrig);
 
                 if (connectionString === null || connectionString === "") {
 
-                    site.app.notify.error("数据库连接字符串不能为空");
+                    site.app.notify.error("没有配置数据库连接字符串，青岛基础配置页面维护");
 
                     return;
                 }
 
-                //保存字符串到本地浏览器
-                localStorage.setItem(site.app.setting.key_SqlServerConnectionStrig, connectionString);
-
-                site.app.notify.success("保存成功");
-            },
-
-            ValidateSqlServerConnectionString: function () {
-
-                var connectionString = page.$SqlServerConnectionString.val();
-
-                //if (connectionString === null || connectionString === "") {
-                //    site.app.notify.error("数据库连接字符串不能为空");
-
-                //    return false;
-                //}
-
-                $.post(globalSetting.baseUrl + "Home/ValidateSqlServerConnection", { SqlServerConnectionString: connectionString }, function (result) {
+                $.post(site.app.setting.baseUrl + "/ListDatabaseTableName", { connectionString: connectionString }, function (result) {
                     if (result.errorCode === site.app.setting.noneErrorCode) {
-                        site.app.notify.success("验证成功");
 
-                        return true;
+                        //填充数据到下拉组件
+
+                        for (var i = 0; i < result.data.length; i++) {
+                            var option = "<option id=" + result.data[i].id + ">" + result.data[i].text + "</option>";
+
+                            page.$SelectDatabaseTableName.append(option);
+                        }
+
+
                     } else {
                         site.app.notify.error(result.errorMessage);
-
-                        return false;
                     }
                 })
             },
 
-            Init: function () {
-                page.$Save.click(function () {
-                    page.Save();
-                });
+            Search: function () {
 
-                page.$Validate.click(function () {
-                    page.ValidateSqlServerConnectionString();
-                });
+                if ($("#SelectDatabaseTableName option:selected").val() === "") {
 
-                //获取之前保存到本地浏览器的数据库连接字符串
-                var connectionString = localStorage.getItem(site.app.setting.key_SqlServerConnectionStrig);
+                    site.app.notify.error("请选择一个数据库表");
 
-                if (connectionString !== null || connectionString !== "") {
-                    page.$SqlServerConnectionString.val(connectionString);
+                    return;
                 }
+
+                page.LoadSelectedDatabaseTableInfo($("#SelectDatabaseTableName option:selected").val())
+
+            },
+
+            LoadSelectedDatabaseTableInfo: function (databaseTableName) {
+
+                $.post(site.app.setting.baseUrl + "/ListDatabaseTableColumn", { connectionString: connectionString, databaseTableName: databaseTableName }, function (result) {
+                    if (result.errorCode === site.app.setting.noneErrorCode) {
+
+                        //将数据填充给到表中
+                        if (page.DataTable) {
+                            page.DataTable.destroy();
+                            page.$Table.empty();
+                        }
+
+                        page.DataTable = page.$Table.dataTable({
+                            "scrollCollapse": true,
+                            "scrollX": true,
+                            "searching": false,
+                            "ordering": false,
+                            "renderer": "bootstrap",
+                            "data": $.parseJSON(result.data),
+                            "dom": "<'row'<'col-md-12 align-items-center't><'col-md-2 align-items-center'i><'col-md-2 align-items-center'l><'col-md-8 align-items-center'p>>",
+                            "columns": [
+                                {
+                                    "title": "TableName",
+                                    "data": "TableName"
+                                },
+                                {
+                                    "title": "PrimaryKey",
+                                    "data": "PrimaryKey"
+                                },
+                                {
+                                    "title": "ColumnName",
+                                    "data": "ColumnName"
+                                },
+                                {
+                                    "title": "DataType",
+                                    "data": "DataType"
+                                },
+                                {
+                                    "title": "Length",
+                                    "data": "Length"
+                                },
+                                {
+                                    "title": "Precision",
+                                    "data": "Precision"
+                                },
+                                {
+                                    "title": "Scale",
+                                    "data": "Scale"
+                                },
+                                {
+                                    "title": "AllowNull",
+                                    "data": "AllowNull"
+                                },
+                                {
+                                    "title": "Default",
+                                    "data": "Default"
+                                },
+                                {
+                                    "title": "IsIdentity",
+                                    "data": "IsIdentity"
+                                },
+                                {
+                                    "title": "Desc",
+                                    "data": "Desc"
+                                }
+                            ]
+                        });
+
+                    } else {
+                        site.app.notify.error(result.errorMessage);
+                    }
+                })
+
+            },
+
+            Init: function () {
+                page.$Search.click(function () {
+                    page.Search();
+                });
+
+                page.ListDatabaseTableName();
             }
         };
 

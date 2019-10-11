@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using ABPCodeGenerator.Filters;
+using ABPCodeGenerator.Utilities;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace ABPCodeGenerator.Controllers
 {
@@ -20,43 +23,48 @@ namespace ABPCodeGenerator.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult ListTableName(string connectionString)
+        [HttpPost]
+        [ParameterNullOrEmptyFilter]
+        public IActionResult ListDatabaseTableName(string connectionString)
         {
+            var errorMessage = string.Empty;
+            var errorCode = AppConfig.ErrorCodes.NONE;
             var resultList = new List<dynamic>();
             var executeSql = $@"select object_id id,name text from sys.tables";
             var parameters = new { };
 
-            using (var conn = new SqlConnection(connectionString))
+            try
             {
-                var queryList = conn.Query<dynamic>(executeSql, parameters).ToList();
 
-                foreach (var item in queryList)
+                using (var conn = new SqlConnection(connectionString))
                 {
-                    resultList.Add(new { id = item.id, text = item.text });
-                }
+                    var queryList = conn.Query<dynamic>(executeSql, parameters).ToList();
 
+                    foreach (var item in queryList)
+                    {
+                        resultList.Add(new { id = item.id, text = item.text });
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                errorCode = AppConfig.ErrorCodes.ERROR;
+                errorMessage = ex.Message;
             }
 
-            return new JsonResult(resultList);
+            return new JsonResult(new { errorCode, errorMessage, data = resultList });
         }
 
         [HttpPost]
-        public IActionResult ListTableColumn(string connectionString, string tableName)
+        [ParameterNullOrEmptyFilter]
+        public IActionResult ListDatabaseTableColumn(string connectionString, string databaseTableName)
         {
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new ArgumentNullException($"参数不能为空");
-            }
-
+            var errorMessage = string.Empty;
+            var errorCode = AppConfig.ErrorCodes.NONE;
             var resultList = new List<dynamic>();
             var executeSql = $@"
-SELECT TableName = CASE
-                WHEN A.colorder = 1 THEN
-                    D.name
-                ELSE
-                    ''
-            END,
+SELECT TableName = D.name,
        PrimaryKey = CASE
                 WHEN EXISTS
                      (
@@ -104,7 +112,7 @@ SELECT TableName = CASE
                           ELSE
                               'N'
                       END,
-       'Desc.' = ''
+       'Desc' = ''
 FROM syscolumns A
     LEFT JOIN systypes B
         ON A.xusertype = B.xusertype
@@ -125,20 +133,22 @@ ORDER BY A.id,
          A.colorder;
 
 ";
-            var sqlParameters = new { tablename = tableName };
+            var sqlParameters = new { tablename = databaseTableName };
 
-            using (var conn = new SqlConnection(connectionString))
+            try
             {
-                var queryList = conn.Query<dynamic>(executeSql, sqlParameters).ToList();
-
-                foreach (var item in queryList)
+                using (var conn = new SqlConnection(connectionString))
                 {
-                    resultList.Add(new { id = item.id, text = item.text });
+                    resultList = conn.Query<dynamic>(executeSql, sqlParameters).ToList();
                 }
-
+            }
+            catch (Exception ex)
+            {
+                errorCode = AppConfig.ErrorCodes.ERROR;
+                errorMessage = ex.Message;
             }
 
-            return new JsonResult(resultList);
+            return new JsonResult(new { errorCode, errorMessage, data = JsonConvert.SerializeObject(resultList) });
         }
     }
 }

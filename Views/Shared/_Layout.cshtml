@@ -40,7 +40,12 @@
             <nav class="col-sm-12 col-md-1 col-lg-1 d-none d-md-block bg-light sidebar">
                 <div class="sidebar-sticky">
                     <ul class="nav nav-pills text-left flex-column">
-                        <li class="nav-item active">
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewBag.PageName == "Dashboard" ? "active" : string.Empty)" href="/Dashboard">
+                                <i class="fa fa-circle-o"></i> 工作台
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link @(ViewBag.PageName == "Home" ? "active" : string.Empty)" href="/Home">
                                 <i class="fa fa-circle-o"></i> 基础配置
                             </a>
@@ -55,7 +60,7 @@
                 </div>
             </nav>
 
-            <main role="main" class="col-sm-12 col-md-11 col-lg-11 bg-transparent">
+            <main role="main" class="col-sm-12 col-md-11 col-lg-11 bg-white">
                 @RenderBody()
             </main>
         </div>
