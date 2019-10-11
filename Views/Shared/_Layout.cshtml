@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="~/css/dashboard.css" />
     <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
     <link rel="stylesheet" href="~/lib/layer/skin/layer.css" />
-    <style type="text/css">
-    </style>
+
+    <script>
+    </script>
 </head>
 <body>
     <header class="navbar navbar-dark bg-dark fixed-top bg-secondary flex-md-nowrap p-0">
@@ -38,187 +39,18 @@
         <div class="row">
             <nav class="col-sm-12 col-md-1 col-lg-1 d-none d-md-block bg-light sidebar">
                 <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
+                    <ul class="nav nav-pills text-left flex-column">
                         <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
+                            <a class="nav-link @(ViewBag.PageName == "Home" ? "active" : string.Empty)" href="/Home">
                                 <i class="fa fa-circle-o"></i> 基础配置
                             </a>
                         </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewBag.PageName == "Template" ? "active" : string.Empty)" href="/Template">
                                 <i class="fa fa-circle-o"></i> 生成模板
                             </a>
                         </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="/Home">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
+
                     </ul>
                 </div>
             </nav>
