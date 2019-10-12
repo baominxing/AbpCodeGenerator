@@ -17,6 +17,7 @@
                 </select>
             </div>
 
+            <button type="submit" class="btn btn-primary float-right ml-2" id="Generate">生成</button>
             <button type="submit" class="btn btn-primary float-right" id="Search">查询</button>
         </div>
     </div>
@@ -27,7 +28,6 @@
             <table class="table table-bordered table-hover w-100" id="Table"></table>
         </div>
     </div>
-
 </div>
 
 @section Scripts
@@ -39,8 +39,10 @@
             $SelectDatabaseTableName: $("#SelectDatabaseTableName"),
             $SelectedDatabaseTableName: $("#SelectDatabaseTableName option:selected"),
             $Search: $("#Search"),
+            $Generate: $("#Generate"),
             $Table: $("#Table"),
             DataTable: null,
+            SelectedArray: [],//存放当前表格中选择的项的ColumnId集合
 
             ListDatabaseTableName: function () {
                 //获取之前保存到本地浏览器的数据库连接字符串
@@ -91,7 +93,7 @@
 
                         //将数据填充给到表中
                         if (page.DataTable) {
-                            page.DataTable.destroy();
+                            page.DataTable.fnDestroy();
                             page.$Table.empty();
                         }
 
@@ -101,9 +103,66 @@
                             "searching": false,
                             "ordering": false,
                             "renderer": "bootstrap",
+                            "destroy": true,
                             "data": $.parseJSON(result.data),
-                            "dom": "<'row'<'col-md-12 align-items-center't><'col-md-2 align-items-center'i><'col-md-2 align-items-center'l><'col-md-8 align-items-center'p>>",
+                            "language": {
+                                processing: "处理中...",
+                                lengthMenu: "每页显示 _MENU_ 项",
+                                zeroRecords: "没有匹配结果",
+                                info: "第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                infoEmpty: "显示第 0 至 0 项结果，共 0 项",
+                                infoFiltered: "",
+                                infoPostFix: "",
+                                search: "搜索:",
+                                searchPlaceholder: "搜索...",
+                                url: "",
+                                emptyTable: "表中数据为空",
+                                loadingRecords: "载入中...",
+                                infoThousands: ",",
+                                paginate: {
+                                    first: "首页",
+                                    previous: "上页",
+                                    next: "下页",
+                                    last: "末页"
+                                },
+                                aria: {
+                                    paginate: {
+                                        first: "首页",
+                                        previous: "上页",
+                                        next: "下页",
+                                        last: "末页"
+                                    },
+                                    sortAscending: "以升序排列此列",
+                                    sortDescending: "以降序排列此列"
+                                },
+                                decimal: "-",
+                                thousands: "."
+                            },
+                            //"dom": "<'row'<'col-md-12 align-items-center't><'col-md-2 align-items-center'i><'col-md-2 align-items-center'l><'col-md-8 align-items-center'p>>",
+                            "dom": '<"top">rt<"row"<"col-md-12"<"float-left"i><"float-right"p><"float-left datatable_l"l>>>',
                             "columns": [
+                                {
+                                    "title": "RowNumber",
+                                    "data": null,
+                                    "orderable": false,
+                                    "render": function (data, type, row, meta) {
+                                        return meta.row + 1 +
+                                            meta.settings._iDisplayStart;
+                                    }
+                                },
+                                {
+                                    "defaultContent": "",
+                                    "title": '<input class="checkbox-all" type="checkbox"/>',
+                                    "width": "20px",
+                                    "className": "text-center",
+                                    "createdCell": function (td, cellData, rowData, row, col) {
+                                        var $control = $('<input class="checkbox-item align-middle text-center" type="checkbox" value="' + row.ColumnId + '"/>');
+                                        $control.appendTo($(td)).click(function () {
+                                            page.SelectItem($control, rowData);
+                                        });
+
+                                    }
+                                },
                                 {
                                     "title": "TableName",
                                     "data": "TableName"
@@ -158,12 +217,63 @@
 
             },
 
+            Generate: function () {
+
+                if (page.SelectedArray.length === 0) {
+                    site.app.notify.error("最少选择一个字段");
+
+                    return;
+                }
+
+                var databaseTableName = $("#SelectDatabaseTableName option:selected").val();
+                var columnIdList = _.pluck(page.SelectedArray, "ColumnId");
+
+                $.post(site.app.setting.baseUrl + "/GenerateCode", { connectionString: connectionString, databaseTableName: databaseTableName, columnIdList: columnIdList }, function (result) {
+                    if (result.errorCode === site.app.setting.noneErrorCode) {
+                        site.app.notify.success("生成成功");
+                    } else {
+                        site.app.notify.error(result.errorMessage);
+                    }
+                })
+            },
+
+            SelectItem: function ($this, item) {
+
+                if ($this.prop("checked")) {
+                    if (!_.contains(page.SelectedArray, item)) {
+                        page.SelectedArray.push(item);
+                    }
+                } else {
+                    page.SelectedArray = _.reject(page.SelectedArray, function (one) { return one.value === item.ColumnId; });
+                }
+
+            },
+
             Init: function () {
                 page.$Search.click(function () {
                     page.Search();
                 });
 
+                page.$Generate.click(function () {
+                    page.Generate();
+                });
+
                 page.ListDatabaseTableName();
+
+                $(document).on("click", ".checkbox-all", function () {
+                    var $self = $(this);
+                    page.SelectedArray = [];
+
+                    if ($self.prop("checked")) {
+                        var data = page.DataTable.fnGetData();
+                        _.each(data, function (item) {
+                            page.SelectedArray.push(item);
+                        });
+                    }
+
+                    //界面上体现全选/全不选
+                    $self.closest(".dataTables_wrapper").find(".checkbox-item").prop("checked", $self.prop("checked"));
+                });
             }
         };
 

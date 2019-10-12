@@ -15,5 +15,12 @@ namespace ABPCodeGenerator.Utilities
 
             public const string ERROR = "1";
         }
+
+        public class DatabaseTableColumn
+        {
+            public bool IsPrimaryKey { get; set; }
+
+            public bool IsNullable { get; set; }
+        }
     }
 }

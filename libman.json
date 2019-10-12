@@ -17,6 +17,10 @@
     {
       "library": "layer@2.3",
       "destination": "wwwroot/lib/layer"
+    },
+    {
+      "library": "underscore.js@1.9.1",
+      "destination": "wwwroot/lib/underscore.js/"
     }
   ]
 }

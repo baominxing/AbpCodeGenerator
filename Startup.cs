@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ABPCodeGenerator.Services;
 using ABPCodeGenerator.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,27 +17,6 @@ namespace ABPCodeGenerator
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
-
-            //将一些配置全局化，方便访问
-            ConfigureGlobalVariables(Configuration);
-        }
-
-        /// <summary>
-        ///  将一些配置全局化，方便访问
-        /// </summary>
-        /// <param name="configuration"></param>
-        private void ConfigureGlobalVariables(IConfiguration configuration)
-        {
-            //配置Sql Server 数据库连接字段
-            var sqlSeverConnectionString = configuration.GetConnectionString("DefaultConnection");
-
-            if (string.IsNullOrEmpty(sqlSeverConnectionString))
-            {
-                throw new Exception("没有配置Sql Server数据库连接字符串");
-            }
-
-            AppConfig.SqlServerConnectionString = sqlSeverConnectionString;
         }
 
         public IConfiguration Configuration { get; }
@@ -45,6 +25,8 @@ namespace ABPCodeGenerator
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddTransient<ITemplateService, TemplateService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,7 +46,7 @@ namespace ABPCodeGenerator
             app.UseCors(builder => builder.WithOrigins("https://localhost:5001/"));
 
             app.UseHttpsRedirection();
-            
+
             app.UseStaticFiles();
 
             app.UseRouting();
