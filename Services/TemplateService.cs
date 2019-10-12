@@ -1,15 +1,39 @@
-﻿using ABPCodeGenerator.Templates;
+﻿using ABPCodeGenerator.Models;
 using ABPCodeGenerator.Utilities;
 using Dapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Routing;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ABPCodeGenerator.Services
 {
     public class TemplateService : ITemplateService
     {
         private readonly string projectName = "WIMI.BTL";
+        private readonly IRazorViewEngine razorViewEngine;
+        private readonly ITempDataProvider tempDataProvider;
+        private readonly IServiceProvider serviceProvider;
+
+        public TemplateService(IRazorViewEngine razorViewEngine,
+            ITempDataProvider tempDataProvider,
+            IServiceProvider serviceProvider)
+        {
+            this.razorViewEngine = razorViewEngine;
+            this.tempDataProvider = tempDataProvider;
+            this.serviceProvider = serviceProvider;
+        }
+
         public List<dynamic> ListDatabaseTableName(string connectionString)
         {
             var resultList = new List<dynamic>();
@@ -140,9 +164,15 @@ ORDER BY A.id,
         /// 生成运行代码
         /// </summary>
         /// <param name="selectedDatabaseTableColumnList"></param>
-        public void GenerateCode(IEnumerable<dynamic> selectedDatabaseTableColumnList)
+        public void GenerateCode(List<dynamic> selectedDatabaseTableColumnList)
         {
+
+            var result = this.RenderToStringAsync("Templates/Template1", new TemplateViewModel() { Name = "Fred.Bao" });
+
             #region 权限
+            //var template = "Hello @Model.Name, welcome to use RazorEngine!";
+            //var result = Engine.Razor.RunCompile(template, "templateKey1", null, new { Name = "World" });
+            //System.IO.File.WriteAllText($"/GeneratedCodes/{DateTime.Now.ToString("yyyyMMddHHmmss")}/outputPage.html", result);
             #endregion
 
             #region 菜单
@@ -162,6 +192,40 @@ ORDER BY A.id,
             #region MyRegion
 
             #endregion
+        }
+
+        public async Task<string> RenderToStringAsync(string viewName, object model)
+        {
+            var httpContext = new DefaultHttpContext { RequestServices = this.serviceProvider };
+            var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+
+            using (var sw = new StringWriter())
+            {
+                var viewResult = this.razorViewEngine.FindView(actionContext, viewName, false);
+
+                if (viewResult.View == null)
+                {
+                    throw new ArgumentNullException($"{viewName} does not match any available view");
+                }
+
+                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                {
+                    Model = model
+                };
+
+                var viewContext = new ViewContext(
+                    actionContext,
+                    viewResult.View,
+                    viewDictionary,
+                    new TempDataDictionary(actionContext.HttpContext, this.tempDataProvider),
+                    sw,
+                    new HtmlHelperOptions()
+                );
+
+                await viewResult.View.RenderAsync(viewContext);
+
+                return sw.ToString();
+            }
         }
     }
 }
