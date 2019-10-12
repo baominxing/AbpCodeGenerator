@@ -13,11 +13,11 @@ using Newtonsoft.Json;
 
 namespace ABPCodeGenerator.Controllers
 {
-    public class TemplateController : BaseController
+    public class GenerateCodeController : BaseController
     {
         private readonly ITemplateService templateService;
 
-        public TemplateController(
+        public GenerateCodeController(
             ITemplateService templateService,
             ILogger<BaseController> logger) : base(logger)
         {
@@ -83,7 +83,7 @@ namespace ABPCodeGenerator.Controllers
                 //取出所选表所有的列
                 var originalDatabaseTableColumnList = this.templateService.ListDatabaseTableColumn(connectionString, databaseTableName);
                 //取出页面上选择的列
-                var selectedDatabaseTableColumnList = originalDatabaseTableColumnList.Where(s => columnIdList.Contains(s.ColumnId));
+                var selectedDatabaseTableColumnList = originalDatabaseTableColumnList.Where(s => columnIdList.Contains(s.ColumnId.ToString())).ToList();
                 //取出页面上选择的列
                 this.templateService.GenerateCode(selectedDatabaseTableColumnList);
 

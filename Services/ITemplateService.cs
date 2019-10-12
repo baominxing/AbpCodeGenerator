@@ -11,6 +11,6 @@ namespace ABPCodeGenerator.Services
 
         List<dynamic> ListDatabaseTableColumn(string connectionString, string databaseTableName);
 
-        void GenerateCode(IEnumerable<dynamic> selectedDatabaseTableColumnList);
+        void GenerateCode(List<dynamic> selectedDatabaseTableColumnList);
     }
 }
