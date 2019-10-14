@@ -1,0 +1,26 @@
+﻿@model ABPCodeGenerator.Models.AuthorizationProviderViewModel
+@{
+    Layout = null;
+}
+namespace @(Model.ProjectName).Authorization
+{
+    using Abp.Authorization;
+    using Abp.Localization;
+    using Abp.MultiTenancy;
+
+    public class BtlAuthorizationProvider : AuthorizationProvider
+    {
+        public override void SetPermissions(IPermissionDefinitionContext context)
+        {
+            var pages = context.GetPermissionOrNull(PermissionNames.Pages) ?? context.CreatePermission(PermissionNames.Pages, L("Pages"));
+
+            #region @(Model.ModuleName)
+            var @(Model.ModuleName) = pages.CreateChildPermission(PermissionNames.Pages_@(Model.ModuleName), L("@(Model.ModuleName)"));
+            
+            //如果是生成的是页面，则拷贝下面两行即可，如果是一个新的模块的页面，则拷贝整个region内的代码
+            var @(Model.PageName) = @(Model.ModuleName).CreateChildPermission(PermissionNames.Pages_@(Model.ModuleName)_@(Model.PageName), L("@(Model.PageName)"));
+            @(Model.PageName).CreateChildPermission(PermissionNames.Pages_@(Model.ModuleName)_@(Model.PageName)_Manage, L("@(Model.PageName)Manage"));
+            #endregion
+        }
+    }
+}

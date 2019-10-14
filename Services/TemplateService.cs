@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ABPCodeGenerator.Services
@@ -64,9 +65,9 @@ namespace ABPCodeGenerator.Services
             return resultList;
         }
 
-        public List<dynamic> ListDatabaseTableColumn(string connectionString, string databaseTableName)
+        public List<ColumnInfo> ListDatabaseTableColumn(string connectionString, string databaseTableName)
         {
-            var resultList = new List<dynamic>();
+            var resultList = new List<ColumnInfo>();
             var executeSql = $@"
 SELECT TableName = D.name,
        PrimaryKey = CASE
@@ -140,7 +141,7 @@ ORDER BY A.id,
 ";
             var sqlParameters = new { tablename = databaseTableName };
 
-            var cachedResult = CacheHelper.Get<List<dynamic>>($"ListDatabaseTableName#{databaseTableName}");
+            var cachedResult = CacheHelper.Get<List<ColumnInfo>>($"ListDatabaseTableName#{databaseTableName}");
 
             if (cachedResult != null)
             {
@@ -152,7 +153,7 @@ ORDER BY A.id,
 
             using (var conn = new SqlConnection(connectionString))
             {
-                resultList = conn.Query<dynamic>(executeSql, sqlParameters).ToList();
+                resultList = conn.Query<ColumnInfo>(executeSql, sqlParameters).ToList();
             }
 
             CacheHelper.Set($"ListDatabaseTableName#{databaseTableName}", resultList);
@@ -164,33 +165,298 @@ ORDER BY A.id,
         /// 生成运行代码
         /// </summary>
         /// <param name="selectedDatabaseTableColumnList"></param>
-        public void GenerateCode(List<dynamic> selectedDatabaseTableColumnList)
+        public void GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList)
         {
+            var targetFolder = Path.Combine($"GeneratedCodes/{DateTime.Now.ToString("yyyyMMdd")}");
+            var targetFile = string.Empty;
+            var renderedString = string.Empty;
 
-            var result = this.RenderToStringAsync("Templates/Template1", new TemplateViewModel() { Name = "Fred.Bao" });
+            if (!Directory.Exists(targetFolder))
+            {
+                Directory.CreateDirectory(targetFolder);
+            }
 
-            #region 权限
-            //var template = "Hello @Model.Name, welcome to use RazorEngine!";
-            //var result = Engine.Razor.RunCompile(template, "templateKey1", null, new { Name = "World" });
-            //System.IO.File.WriteAllText($"/GeneratedCodes/{DateTime.Now.ToString("yyyyMMddHHmmss")}/outputPage.html", result);
+            #region Application/EntityDto
+            targetFile = "OrderDto.cs";
+
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Application/Dtos/Template_EntityDto", new EntityDtoViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
+
             #endregion
 
-            #region 菜单
+            #region Application/EntityInputDto
+            targetFile = "OrderInputDto.cs";
+
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Application/Dtos/Template_EntityInputDto", new EntityInputDtoViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
 
             #endregion
 
-            #region Views
-            //.cshtml
+            #region Application/IAppService
+            targetFile = "IOrderAppService.cs";
 
-            //.js
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Application/Template_IAppService", new IAppServiceViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
             #endregion
 
-            #region Application
+            #region Application/AppService
+            targetFile = "OrderAppService.cs";
 
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Application/Template_AppService", new AppServiceViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
             #endregion
 
-            #region MyRegion
+            #region Core/AuthorizationProvider
+            targetFile = "BtlAuthorizationProvider.cs";
 
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Core/Authentication/Template_AuthorizationProvider", new AuthorizationProviderViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
+            #endregion
+
+            #region Core/PermissionNames
+            targetFile = "PermissionNames.cs";
+
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Core/Authentication/Template_PermissionNames", new PermissionNamesViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
+            #endregion
+
+            #region Web/NavigationProvider
+            targetFile = "NavigationProvider.cs";
+
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Web/App_Start/Navigation/Template_NavigationProvider", new NavigationProviderViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
+            #endregion
+
+            #region Web/PageNames
+            targetFile = "PageNames.cs";
+
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Web/App_Start/Navigation/Template_PageNames", new PageNamesViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
+            #endregion
+
+            #region Web/Controller
+            targetFile = "Controller.cs";
+
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Web/Controller/Template_Controller", new ControllerViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
+            #endregion
+
+
+            #region Web/ViewModel
+            targetFile = "ViewModel.cs";
+
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Web/ViewModel/Template_ViewModel", new ViewModelViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
+            #endregion
+
+            #region Web/CreateOrUpdateModal.cshtml
+            targetFile = "CreateOrUpdateModal.cshtml";
+
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_CreateOrUpdateModalCshtml", new CreateOrUpdateModalCshtmlViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
+            #endregion
+
+            #region Web/CreateOrUpdateModal.js
+            targetFile = "CreateOrUpdateModal.js";
+
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_CreateOrUpdateModalJs", new CreateOrUpdateModalJsViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
+            #endregion
+
+            #region Web/Index.cshtml
+            targetFile = "Index.cshtml";
+
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_IndexCshtml", new IndexCshtmlViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
+            #endregion
+
+            #region Web/Index.js
+            targetFile = "Index.js";
+
+            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            {
+                File.Delete(Path.Combine(targetFolder, targetFile));
+
+                using (File.Create(Path.Combine(targetFolder, targetFile)))
+                {
+
+                }
+            }
+
+            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_IndexJs", new IndexJsViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+
+            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+
+            renderedString = string.Empty;
             #endregion
         }
 

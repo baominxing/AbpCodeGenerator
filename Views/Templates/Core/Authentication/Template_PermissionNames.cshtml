@@ -1,0 +1,17 @@
+﻿@model ABPCodeGenerator.Models.PermissionNamesViewModel
+@{
+    Layout = null;
+}
+namespace @(Model.ProjectName).Authorization
+{
+    public static class PermissionNames
+    {
+        #region @(Model.ModuleName)
+        public const string Pages_@(Model.ModuleName) = "Pages.@(Model.ModuleName)";
+        //如果是生成的是页面，则拷贝下面两行即可，如果是一个新的模块的页面，则拷贝整个region内的代码
+        public const string Pages_@(Model.ModuleName)_@(Model.PageName) = "Pages.@(Model.ModuleName).@(Model.PageName)";
+        public const string Pages_@(Model.ModuleName)_@(Model.PageName)_Manage = "Pages.@(Model.ModuleName).@(Model.PageName).Manage";
+        #endregion
+    }
+}
+

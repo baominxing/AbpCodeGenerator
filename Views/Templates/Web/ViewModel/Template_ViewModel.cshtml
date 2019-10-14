@@ -1,0 +1,15 @@
+﻿@model ABPCodeGenerator.Models.ViewModelViewModel
+@{
+    Layout = null;
+}
+using @(Model.ProjectName).@(Model.ModuleName).Dto;
+
+namespace @(Model.ProjectName).Web.Models.@(Model.ModuleName)
+{
+    public class @(Model.EntityName)ViewModel
+    {
+        public @(Model.EntityName)Dto Dto { get; set; } = new @(Model.EntityName)Dto();
+
+        public bool IsEditMode { get; set; }
+    }
+}

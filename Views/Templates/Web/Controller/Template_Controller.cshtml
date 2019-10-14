@@ -1,0 +1,49 @@
+﻿@model ABPCodeGenerator.Models.ControllerViewModel
+@{
+    Layout = null;
+}
+using Abp.Web.Mvc.Authorization;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using @(Model.ProjectName).Authorization;
+using @(Model.ProjectName).@(Model.ModuleName);
+using @(Model.ProjectName).@(Model.ModuleName).Dto;
+using @(Model.ProjectName).Web.Models.@(Model.ModuleName);
+
+namespace @(Model.ProjectName).Web.Controllers.@(Model.PageName)
+{
+    [AbpMvcAuthorize(PermissionNames.Pages_@(Model.ModuleName)_@(Model.PageName))]
+    public class @(Model.PageName)Controller : BtlControllerBase
+    {
+        // GET: Process
+        private readonly I@(Model.EntityName)AppService @(Model.EntityName.ToLower())AppService;
+
+        public OrderMaintainController(I@(Model.EntityName)AppService @(Model.EntityName.ToLower())AppService)
+        {
+            this.@(Model.EntityName.ToLower())AppService = @(Model.EntityName.ToLower())AppService;
+        }
+
+        public ActionResult Index()
+        {
+            return this.View("~/Views/@(Model.ModuleName)/@(Model.PageName)/Index.cshtml");
+        }
+
+        public async Task<PartialViewResult> CreateOrUpdateModal(int? id)
+        {
+            var model = new @(Model.EntityName)ViewModel();
+
+            if (id.HasValue)
+            {
+                var dto = await this.@(Model.EntityName.ToLower())AppService.Get@(Model.EntityName)ForEdit(new @(Model.EntityName)InputDto() { Id = id.Value });
+              
+                if (dto != null)
+                {
+                    model.Dto = dto;
+                    model.IsEditMode = true;
+                }
+            }
+
+            return this.PartialView("~/Views/@(Model.ModuleName)/@(Model.PageName)/CreateOrUpdateModal.cshtml", model);
+        }
+    }
+}

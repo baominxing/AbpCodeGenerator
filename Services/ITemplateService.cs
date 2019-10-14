@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ABPCodeGenerator.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,8 +10,8 @@ namespace ABPCodeGenerator.Services
     {
         List<dynamic> ListDatabaseTableName(string connectionString);
 
-        List<dynamic> ListDatabaseTableColumn(string connectionString, string databaseTableName);
+        List<ColumnInfo> ListDatabaseTableColumn(string connectionString, string databaseTableName);
 
-        void GenerateCode(List<dynamic> selectedDatabaseTableColumnList);
+        void GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList);
     }
 }

@@ -7,3 +7,4 @@
 /obj
 /bin/Release/netcoreapp3.0
 /GeneratedCodes
+/bin/IISSupport

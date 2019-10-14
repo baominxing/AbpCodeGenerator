@@ -1,0 +1,21 @@
+﻿@model ABPCodeGenerator.Models.IAppServiceViewModel
+using Abp.Application.Services;
+using System.Threading.Tasks;
+using @(Model.ProjectName).Dto;
+using @(Model.ProjectName).@(Model.EntityName).Dto;
+
+namespace @(Model.ProjectName).@(Model.EntityName)
+{
+    public interface I@(Model.EntityName)AppService : IApplicationService
+    {
+        Task<DatatablesPagedResultOutput<@(Model.EntityName)Dto>> List@(Model.EntityName)(@(Model.EntityName)InputDto input);
+
+        Task Create@(Model.EntityName)(@(Model.EntityName)InputDto input);
+
+        Task Update@(Model.EntityName)(@(Model.EntityName)InputDto input);
+
+        Task Delete@(Model.EntityName)(@(Model.EntityName)InputDto input);
+
+        Task<@(Model.EntityName)Dto> Get@(Model.EntityName)ForEdit(@(Model.EntityName)InputDto input);
+    }
+}

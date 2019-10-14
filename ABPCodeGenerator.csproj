@@ -4,6 +4,13 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="GeneratedCodes\**" />
+    <Content Remove="GeneratedCodes\**" />
+    <EmbeddedResource Remove="GeneratedCodes\**" />
+    <None Remove="GeneratedCodes\**" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <None Remove=".gitignore" />
@@ -32,11 +39,6 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="GeneratedCodes\" />
   </ItemGroup>
 
 </Project>

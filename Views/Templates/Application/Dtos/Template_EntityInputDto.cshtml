@@ -1,0 +1,28 @@
+﻿@model ABPCodeGenerator.Models.EntityInputDtoViewModel
+@{
+    Layout = null;
+}
+using Abp.Runtime.Validation;
+using System;
+using @(Model.ProjectName).Dto;
+
+namespace @(Model.ProjectName).@(Model.EntityName).Dto
+{
+     public class @(Model.EntityName)InputDto : PagedSortedAndFilteredInputDto, IShouldNormalize
+    {
+@{
+        foreach (var column in Model.AllColumnList)
+        {
+@Html.Raw($"        public {column.GetCSharpDataType()} {column.ColumnName} {{ get; set; }}" + Environment.NewLine);
+            @Html.Raw(Environment.NewLine);
+        }
+}
+        public void Normalize()
+        {
+            if (string.IsNullOrEmpty(this.Sorting))
+            {
+                this.Sorting = "@(Model.Sorting)";
+            }
+        }
+    }
+}

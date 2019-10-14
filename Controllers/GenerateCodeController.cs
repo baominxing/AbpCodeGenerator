@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using ABPCodeGenerator.Filters;
+using ABPCodeGenerator.Models;
 using ABPCodeGenerator.Services;
 using ABPCodeGenerator.Utilities;
 using Dapper;
@@ -56,7 +57,7 @@ namespace ABPCodeGenerator.Controllers
         {
             var errorMessage = string.Empty;
             var errorCode = AppConfig.ErrorCodes.NONE;
-            var resultList = new List<dynamic>();
+            var resultList = new List<ColumnInfo>();
 
             try
             {
@@ -83,7 +84,7 @@ namespace ABPCodeGenerator.Controllers
                 //取出所选表所有的列
                 var originalDatabaseTableColumnList = this.templateService.ListDatabaseTableColumn(connectionString, databaseTableName);
                 //取出页面上选择的列
-                var selectedDatabaseTableColumnList = originalDatabaseTableColumnList.Where(s => columnIdList.Contains(s.ColumnId.ToString())).ToList();
+                var selectedDatabaseTableColumnList = originalDatabaseTableColumnList.Where(s => columnIdList.Contains(s.ColumnId)).ToList();
                 //取出页面上选择的列
                 this.templateService.GenerateCode(selectedDatabaseTableColumnList);
 

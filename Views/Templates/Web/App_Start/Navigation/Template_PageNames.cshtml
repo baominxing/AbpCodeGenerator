@@ -1,0 +1,21 @@
+﻿@model ABPCodeGenerator.Models.PageNamesViewModel
+@{
+    Layout = null;
+}
+namespace @(Model.ProjectName).Web.Navigation
+{
+    public static class PageNames
+    {
+        public static class App
+        {
+            public static class Page
+            {
+                #region @(Model.ModuleName)
+                public const string @(Model.ModuleName) = "@(Model.ModuleName)";
+                //如果是在已有模块下新增页面，只需要拷贝下面一行代码，如果需要新增一个模块，则拷贝整个region代码块
+                public const string @(Model.ModuleName)_@(Model.PageName) = "@(Model.ModuleName).@(Model.PageName)";
+                #endregion
+            }
+        }
+    }
+}

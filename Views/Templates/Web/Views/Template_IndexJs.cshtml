@@ -1,0 +1,132 @@
+﻿@model ABPCodeGenerator.Models.IndexJsViewModel
+(function () {
+    $(function () {
+        var service = abp.services.app.@(Model.EntityName.ToLower());
+        var permissions = { manage: abp.auth.hasPermission("Pages.@(Model.ModuleName).@(Model.PageName).Manage") };
+        var page = null;
+
+        var createOrUpdateModal = new app.ModalManager({
+            viewUrl: abp.appPath + "@(Model.PageName)/CreateOrUpdateModal",
+            scriptUrl: abp.appPath + "Views/@(Model.ModuleName)/@(Model.PageName)/CreateOrUpdateModal.js",
+            modalClass: "CreateOrUpdateModal"
+        });
+
+        page = {
+            $create: $("#create"),
+            $search: $("#search"),
+            searchParameters: [],
+            $table: $("#table"),
+            dataTable: null,
+
+            create: function () {
+                createOrUpdateModal.open();
+            },
+
+            remove: function (rowData) {
+                abp.message.confirm(app.localize("WhetherToDelete@(Model.EntityName)",
+                    function (isConfirmed) {
+                        if (isConfirmed) {
+                            service.delete@(Model.EntityName)({ Id: rowData.id })
+                                .done(function () {
+                                    abp.notify.success(app.localize("SuccessfullyDeleted"));
+                                    page.dataTable.ajax.reload(null);
+                                });
+                        }
+                    }));
+            },
+
+            search: function () {
+                page.load();
+            },
+
+            load: function () {
+                if (page.dataTable) {
+                    page.dataTable.destroy();
+                    page.$table.empty();
+                }
+
+                page.searchParameters = {};
+
+                page.dataTable = page.$table.WIMIDataTable({
+                    "scrollCollapse": true,
+                    "scrollX": true,
+                    "searching": false,
+                    "ajax": {
+                        "url": abp.appAPIPath + "@(Model.EntityName.ToLower())/list@(Model.EntityName)",
+                        "type": "POST",
+                        "data": page.searchParameters
+                    },
+                    "columns": [
+                        {
+                            "data": null,
+                            "title": app.localize("SerialNumber"),
+                            "width": "30px",
+                            "orderable": false,
+                            "render": function (data, type, row, meta) {
+                                return meta.row + 1 +
+                                    meta.settings._iDisplayStart;
+                            }
+                        },
+                        {
+                            "defaultContent": "",
+                            "title": app.localize("Actions"),
+                            "orderable": false,
+                            "width": "30px",
+                            "className": "action",
+                            "createdCell": function (td, cellData, rowData, row, col) {
+                                $(td)
+                                    .buildDTDropdownActionButtons([
+                                        {
+                                            title: app.localize("Editor"),
+                                            clickEvent: function () {
+                                                createOrUpdateModal.open({ Id: rowData.id });
+                                            },
+                                            isShow: permissions.manage
+                                        },
+                                        {
+                                            title: app.localize("Delete"),
+                                            clickEvent: function () { page.remove(rowData); },
+                                            isShow: permissions.manage
+                                        }
+                                    ]);
+                            }
+                        },
+                        @{
+for (int i = 0; i < Model.AllColumnList.Count; i++) 
+                            {
+@Html.Raw("                        {"+Environment.NewLine)
+@Html.Raw($"                            data: \"{Model.AllColumnList[i].ColumnName.ToLower()}\","+Environment.NewLine)    
+@Html.Raw($"                            title: app.localize(\"{Model.AllColumnList[i].ColumnName}\")"+Environment.NewLine)               
+@Html.Raw("                        },"+Environment.NewLine)
+                            }
+                        }
+                        
+                        
+                    ]
+                });
+
+                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();//表头错位
+            },
+
+            init: function () {
+
+                page.$create.on("click", function () {
+                    page.create();
+                });
+
+                page.$search.on("click", function () {
+                    page.search();
+                });
+
+                page.load();
+            }
+        };
+
+        page.init();
+
+        abp.event.on("app.CreateOrUpdateModalSaved", function () {
+           page.load();
+        });
+    });
+
+})();

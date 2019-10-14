@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost:9003/ABPCodeGenerator",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:62984",
       "sslPort": 44377
@@ -10,7 +14,6 @@
   "profiles": {
     "ABPCodeGenerator": {
       "commandName": "Project",
-      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

@@ -1,0 +1,82 @@
+﻿@model ABPCodeGenerator.Models.IndexCshtmlViewModel
+@Html.Raw("@using Abp.Web.Mvc.Extensions")
+@Html.Raw("@using WIMI.BTL.Authorization")
+@Html.Raw("@using WIMI.BTL.Web.Navigation")
+
+@Html.Raw("@{")
+@Html.Raw($"    ViewBag.CurrentPageName = PageNames.App.Page.{Model.ModuleName}_{Model.PageName};")
+@Html.Raw("}")
+
+@Html.Raw("@section Scripts")
+@Html.Raw("{")
+@Html.Raw($"    @Html.IncludeScript(\"~/Views/{Model.ModuleName}/{Model.PageName}/Index.js\")")
+@Html.Raw("}")
+
+<style>
+    th, td {
+        white-space: nowrap;
+    }
+</style>
+<section class="content-header">
+    <h1>
+        @Html.Raw($"@L(\"{Model.PageName}\")")<small></small>
+    </h1>
+</section>
+
+<section class="content">
+
+    <div class="box box-solid">
+
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-search"></i> @Html.Raw($"@L(\"QueryArea\")")
+            </h3>
+        </div>
+
+        <div class="box-body">
+            <form class="form-horizontal no-padding">
+
+                @{
+                    for (int i = 0; i < Model.AllColumnList.Count; i++)
+                    {
+                        if (i > 5)
+                        {
+                            break;
+                        }
+
+                        <div class="col-md-3">
+                            <label class="col-sm-4 control-label">
+                                <b class="text-primary">@Html.Raw($"@L(\"{Model.AllColumnList[i].ColumnName}\")")</b>
+                            </label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="@Model.AllColumnList[i].ColumnName" />
+                            </div>
+                        </div>
+                    }
+                }
+
+                <br>
+                <br>
+                <br />
+
+                <div class="col-sm-1 pull-right">
+                    <div class="btn btn-primary btn-sm form-control" id="search"><i class="fa fa-search"></i>@Html.Raw($"@L(\"Search\")")</div>
+                </div>
+
+                @Html.Raw($"@if (IsGranted(PermissionNames.Pages_{Model.ModuleName}_{Model.PageName}_Manage))")
+                @Html.Raw("{")
+                <div class="col-sm-1 pull-right">
+                    <div class="btn btn-primary btn-sm form-control" id="create"><i class="fa fa-plus"></i> @Html.Raw($"@L(\"Create\")")</div>
+                </div>
+                @Html.Raw("}")}
+            </form>
+        </div>
+    </div>
+
+    <div class="box box-solid">
+        <div class="box-body">
+            <table id="table" class="table table-bordered table-hover" style="width: 100%"></table>
+        </div>
+    </div>
+
+</section>

@@ -1,0 +1,110 @@
+﻿@model ABPCodeGenerator.Models.AppServiceViewModel
+@{
+    Layout = null;
+}
+using Abp.AutoMapper;
+using Abp.Domain.Repositories;
+using Abp.Linq.Extensions;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq.Dynamic;
+using System.Linq;
+using System.Threading.Tasks;
+using @(Model.ProjectName).Dto;
+using @(Model.ProjectName).@(Model.EntityName).Dto;
+
+namespace @(Model.ProjectName).@(Model.EntityName)
+{
+    public class @(Model.EntityName)AppService : BtlAppServiceBase, I@(Model.EntityName)AppService
+    {
+    private readonly IRepository<@(Model.EntityName), @(Model.EntityPrimaryKeyType)>
+        @(Model.EntityName.ToLower())Repository;
+
+        public @(Model.EntityName)AppService(
+        IRepository<@(Model.EntityName), @(Model.EntityPrimaryKeyType)>
+            @(Model.EntityName.ToLower())Repository
+            )
+            {
+            this.@(Model.EntityName.ToLower())Repository = @(Model.EntityName.ToLower())Repository;
+            }
+
+            public async Task<DatatablesPagedResultOutput<@(Model.EntityName)Dto>> List@(Model.EntityName)(@(Model.EntityName)InputDto input)
+        {
+            var query = from @(Model.EntityName.ToLower()) in this.@(Model.EntityName.ToLower())Repository.GetAll()
+                        select new @(Model.EntityName)Dto
+                        {
+                        @{
+                            foreach (var column in Model.AllColumnList)
+                            {
+@Html.Raw($"                            {column.ColumnName} = {Model.EntityName.ToLower()}.{column.ColumnName}," + Environment.NewLine);
+                            }
+                        }
+                        };
+
+            var entitiyList = await query.OrderBy(input.Sorting).AsNoTracking().PageBy(input).ToListAsync();
+            var entitiyListCount = await query.CountAsync();
+
+            return new DatatablesPagedResultOutput<@(Model.EntityName)Dto>(
+                       entitiyListCount,
+                       entitiyList.MapTo<List<@(Model.EntityName)Dto>>(),
+                       entitiyListCount)
+            {
+                Draw = input.Draw
+            };
+        }
+
+        public async Task Create@(Model.EntityName)(@(Model.EntityName)InputDto input)
+        {
+            var entity = new @(Model.EntityName)();
+
+            @{
+            foreach (var column in Model.AllColumnList)
+            {
+                @Html.Raw($"            entity.{column.ColumnName} = input.{column.ColumnName};" + Environment.NewLine);
+            }
+            }
+
+            await this.@(Model.EntityName.ToLower())Repository.InsertAsync(entity);
+        }
+
+        public async Task Update@(Model.EntityName)(@(Model.EntityName)InputDto input)
+        {
+            var entity = this.@(Model.EntityName.ToLower())Repository.FirstOrDefault(s => s.Id == input.Id);
+
+            @{
+            foreach (var column in Model.AllColumnList)
+            {
+                @Html.Raw($"            entity.{column.ColumnName} = input.{column.ColumnName};" + Environment.NewLine);
+            }
+            }
+
+            await this.@(Model.EntityName.ToLower())Repository.UpdateAsync(entity);
+        }
+
+        public async Task Delete@(Model.EntityName)(@(Model.EntityName)InputDto input)
+        {
+            var entity = this.@(Model.EntityName.ToLower())Repository.FirstOrDefault(s => s.Id == input.Id);
+
+            await this.@(Model.EntityName.ToLower())Repository.DeleteAsync(entity);
+        }
+
+        public async Task<@(Model.EntityName)Dto> Get@(Model.EntityName)ForEdit(@(Model.EntityName)InputDto input)
+        {
+            var query = from @(Model.EntityName.ToLower()) in this.@(Model.EntityName.ToLower())Repository.GetAll()
+                        where @(Model.EntityName.ToLower()).Id == input.Id
+                        select new @(Model.EntityName)Dto
+                        {
+    @{
+                            foreach (var column in Model.AllColumnList)
+                            {
+                                @Html.Raw($"                            {column.ColumnName} = {Model.EntityName.ToLower()}.{column.ColumnName}," + Environment.NewLine);
+                            }
+    }
+                        };
+
+            return await query.FirstOrDefaultAsync();
+        }
+    }
+}
+
+

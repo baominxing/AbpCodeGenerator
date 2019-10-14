@@ -7,7 +7,6 @@ namespace ABPCodeGenerator.Utilities
 {
     public class AppConfig
     {
-        public static string SqlServerConnectionString { get; set; }
 
         public class ErrorCodes
         {

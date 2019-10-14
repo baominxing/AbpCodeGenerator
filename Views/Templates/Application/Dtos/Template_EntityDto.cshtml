@@ -1,0 +1,17 @@
+﻿@model ABPCodeGenerator.Models.EntityDtoViewModel
+using System;
+
+namespace @(Model.ProjectName).@(Model.EntityName).Dto
+{
+    public class @(Model.EntityName)Dto
+    {
+    @{
+        foreach (var column in Model.AllColumnList)
+        {
+            @Html.Raw($"        public {column.GetCSharpDataType()} {column.ColumnName} {{ get; set; }}" + Environment.NewLine);
+            @Html.Raw(Environment.NewLine);
+        }
+    }
+    }
+}
+

@@ -1,0 +1,29 @@
+﻿@model ABPCodeGenerator.Models.CreateOrUpdateModalCshtmlViewModel
+@Html.Raw($"@using {Model.ProjectName}.{Model.ModuleName};")
+@Html.Raw($"@using {Model.ProjectName}.Models.Common.Modals;")
+@Html.Raw($"@model {Model.ProjectName}.Web.Models.{Model.ModuleName}.{Model.EntityName}ViewModel")
+
+@Html.Raw($"@Html.Partial(\"~/Views/Common/Modals/_ModalHeader.cshtml\", new ModalHeaderViewModel(Model.IsEditMode ? L(\"Editor\") : L(\"Create\")))")
+
+<div class="modal-body">
+    <form name="CreateOrUpdateForm" role="form" novalidate class="form-validation">
+        <div class="row">
+            @{
+                foreach (var item in Model.AllColumnList)
+                {
+                    {
+                        <div class="form-group form-md-line-input form-md-floating-label col-xs-12 col-sm-6">
+                            <label>@Html.Raw($"@L(\"{item.ColumnName}\")")</label>
+                            <input class="form-control @item.ColumnName" type="text" name="@item.ColumnName" required maxlength="100"
+                                   value="@Html.Raw($"@(Model.IsEditMode ? Model.Dto.{item.ColumnName} : string.Empty)")">
+                        </div>
+                    }
+                }
+            }
+
+            @Html.Raw($"<input type=\"hidden\" id=\"Id\" name=\"Id\" value=\"@(Model.IsEditMode ? Model.Dto.Id : 0)\" />")
+        </div>
+    </form>
+</div>
+
+@Html.Raw($"@Html.Partial(\"~/Views/Common/Modals/_ModalFooterWithSaveAndCancel.cshtml\")")
