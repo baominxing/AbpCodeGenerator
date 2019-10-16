@@ -1,4 +1,4 @@
-﻿using ABPCodeGenerator.Utilities;
+﻿using ABPCodeGenerator.Core.Entities;
 using System.Collections.Generic;
 
 namespace ABPCodeGenerator.Models
@@ -94,33 +94,5 @@ namespace ABPCodeGenerator.Models
     public class IndexJsViewModel : TemplateViewModel
     {
 
-    }
-
-    public class ColumnInfo
-    {
-        private static readonly string String = "string";
-
-        public string TableName { get; set; }
-        public string PrimaryKey { get; set; }
-        public string ColumnId { get; set; }
-        public string ColumnName { get; set; }
-        public string DataType { get; set; }
-        public string Length { get; set; }
-        public string Precision { get; set; }
-        public string Scale { get; set; }
-        public string AllowNull { get; set; }
-        public string Default { get; set; }
-        public string IsIdentity { get; set; }
-        public string Desc { get; set; }
-
-        public string GetCSharpDataType()
-        {
-            return TypeHelper.SqlServerType2CSharpType(this.DataType) + (IsNullable() ? "?" : "");
-        }
-
-        public bool IsNullable()
-        {
-            return this.AllowNull.ToLower() == "y" && TypeHelper.SqlServerType2CSharpType(this.DataType).ToLower() != String;
-        }
     }
 }

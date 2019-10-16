@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
+using ABPCodeGenerator.Core.Entities;
 using ABPCodeGenerator.Filters;
-using ABPCodeGenerator.Models;
 using ABPCodeGenerator.Services;
 using ABPCodeGenerator.Utilities;
-using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -32,7 +29,7 @@ namespace ABPCodeGenerator.Controllers
 
         [HttpPost]
         [ParameterNullOrEmptyFilter]
-        public IActionResult ListDatabaseTableName(string connectionString)
+        public IActionResult ListDatabaseTableName(ListDatabaseTableNameInputDto input)
         {
             var errorMessage = string.Empty;
             var errorCode = AppConfig.ErrorCodes.NONE;
@@ -40,7 +37,7 @@ namespace ABPCodeGenerator.Controllers
 
             try
             {
-                resultList = this.templateService.ListDatabaseTableName(connectionString);
+                resultList = this.templateService.ListDatabaseTableName(input.ConnectionString);
             }
             catch (Exception ex)
             {
@@ -53,7 +50,7 @@ namespace ABPCodeGenerator.Controllers
 
         [HttpPost]
         [ParameterNullOrEmptyFilter]
-        public IActionResult ListDatabaseTableColumn(string connectionString, string databaseTableName)
+        public IActionResult ListDatabaseTableColumn(ListDatabaseTableColumnInputDto input)
         {
             var errorMessage = string.Empty;
             var errorCode = AppConfig.ErrorCodes.NONE;
@@ -61,7 +58,7 @@ namespace ABPCodeGenerator.Controllers
 
             try
             {
-                resultList = this.templateService.ListDatabaseTableColumn(connectionString, databaseTableName);
+                resultList = this.templateService.ListDatabaseTableColumn(input);
             }
             catch (Exception ex)
             {
@@ -74,7 +71,7 @@ namespace ABPCodeGenerator.Controllers
 
         [HttpPost]
         [ParameterNullOrEmptyFilter]
-        public IActionResult GenerateCode(string connectionString, string databaseTableName, List<string> columnIdList)
+        public IActionResult GenerateCode(GenerateCodeInputDto input)
         {
             var errorMessage = string.Empty;
             var errorCode = AppConfig.ErrorCodes.NONE;
@@ -82,9 +79,9 @@ namespace ABPCodeGenerator.Controllers
             try
             {
                 //取出所选表所有的列
-                var originalDatabaseTableColumnList = this.templateService.ListDatabaseTableColumn(connectionString, databaseTableName);
+                var originalDatabaseTableColumnList = this.templateService.ListDatabaseTableColumn(input);
                 //取出页面上选择的列
-                var selectedDatabaseTableColumnList = originalDatabaseTableColumnList.Where(s => columnIdList.Contains(s.ColumnId)).ToList();
+                var selectedDatabaseTableColumnList = originalDatabaseTableColumnList.Where(s => input.ColumnIdList.Contains(s.ColumnId)).ToList();
                 //取出页面上选择的列
                 this.templateService.GenerateCode(selectedDatabaseTableColumnList);
 
@@ -97,5 +94,45 @@ namespace ABPCodeGenerator.Controllers
 
             return new JsonResult(new { errorCode, errorMessage });
         }
+    }
+
+    public class ListDatabaseTableNameInputDto
+    {
+        public string ConnectionString { get; set; }
+    }
+
+    public class ListDatabaseTableColumnInputDto
+    {
+        public string ConnectionString { get; internal set; }
+        public object TableName { get; internal set; }
+    }
+
+    public class GenerateCodeInputDto
+    {
+        public string ConnectionString { get; set; }
+
+        public string ProjectName { get; set; }
+
+        public string ModuleName { get; set; }
+
+        public string PageName { get; set; }
+
+        public string EntityName { get; set; }
+
+        public string EntityPrimaryKeyType { get; set; }
+
+        public string TableName { get; set; }
+
+        public string EntityNamespace { get; set; }
+
+        public string EntitySortingColumnName { get; set; }
+
+        public List<string> ColumnIdList { get; set; } = new List<string>();
+
+        public List<ColumnInfo> AllColumnList { get; set; } = new List<ColumnInfo>();
+
+        public List<ColumnInfo> SearchColumnList { get; set; } = new List<ColumnInfo>();
+
+        public List<ColumnInfo> TableColumnList { get; set; } = new List<ColumnInfo>();
     }
 }

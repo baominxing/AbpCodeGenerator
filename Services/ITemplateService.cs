@@ -1,4 +1,6 @@
-﻿using ABPCodeGenerator.Models;
+﻿using ABPCodeGenerator.Controllers;
+using ABPCodeGenerator.Core.Entities;
+using ABPCodeGenerator.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +10,9 @@ namespace ABPCodeGenerator.Services
 {
     public interface ITemplateService : IService
     {
-        List<dynamic> ListDatabaseTableName(string connectionString);
+        List<dynamic> ListDatabaseTableName(ListDatabaseTableNameInputDto input);
 
-        List<ColumnInfo> ListDatabaseTableColumn(string connectionString, string databaseTableName);
+        List<ColumnInfo> ListDatabaseTableColumn(ListDatabaseTableColumnInputDto input);
 
         void GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList);
     }

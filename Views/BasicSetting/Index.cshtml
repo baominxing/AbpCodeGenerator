@@ -1,0 +1,124 @@
+﻿@{
+    ViewData["Title"] = "ABPCodeGenerator";
+    ViewBag.PageName = "BasicSetting";
+}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">基础配置<small></small></h1>
+    </div>
+
+    <div class="card shadow">
+        <form class="card-body" id="form">
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label" for="ConnectionString">数据库连接字符串</label>
+                <input type="text" class="col-sm-12 col-md-10 form-control" rows="3" id="ConnectionString" name="ConnectionString" aria-describedby="ConnectionString" required>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label" for="ProjectName">项目名称</label>
+                <input type="text" class="col-sm-12 col-md-10 form-control" id="ProjectName" name="ProjectName" aria-describedby="ProjectName" required>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label" for="ModuleName">模块名称</label>
+                <input type="text" class="col-sm-12 col-md-10 form-control" id="ModuleName" name="ModuleName" aria-describedby="ModuleName" required>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label" for="PageName">页面名称</label>
+                <input type="text" class="col-sm-12 col-md-10 form-control" id="PageName" name="PageName" aria-describedby="PageName" required>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label" for="EntityName">实体名称</label>
+                <input type="text" class="col-sm-12 col-md-10 form-control" id="EntityName" name="EntityName" aria-describedby="EntityName" required>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label" for="EntityPrimaryKeyType">实体主键类型</label>
+                <select class="col-sm-12 col-md-10 form-control" id="EntityPrimaryKeyType" name="EntityPrimaryKeyType" aria-describedby="EntityPrimaryKeyType" required>
+                    <option value="int" selected>int</option>
+                    <option value="string">string</option>
+                    <option value="long">long</option>
+                    <option value="double">double</option>
+                </select>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label" for="TableName">数据库表名称</label>
+                <input type="text" class="col-sm-12 col-md-10 form-control" id="TableName" name="TableName" aria-describedby="TableName" required>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label" for="EntityNamespace">实体命名空间名称</label>
+                <input type="text" class="col-sm-12 col-md-10 form-control" id="EntityNamespace" name="EntityNamespace" aria-describedby="EntityNamespace" required>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label" for="EntitySortingColumnName">排序字段名称</label>
+                <input type="text" class="col-sm-12 col-md-10 form-control" id="EntitySortingColumnName" name="EntitySortingColumnName" aria-describedby="EntitySortingColumnName" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary float-right" id="Save">保存</button>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        var baseUrl = site.app.setting.service.baseUrl;
+        var page = null;
+
+        page = {
+            $form: $("#form"),
+            $Save: $("#Save"),
+
+            Save: function () {
+
+                if (!page.$form.valid()) {
+                    return;
+                }
+
+                var parameters = page.$form.serializeFrom2JsonObjViaName();
+
+                //注意，layer.msg默认3秒自动关闭，如果数据加载耗时比较长，需要设置time
+                var loadingObj = site.app.setBusy("正在保存数据，请稍等...");
+
+                $.post(baseUrl + "/ValidateConnectionString", { connectionString: parameters.ConnectionString }, function (result) {
+                    if (result.errorCode === site.app.setting.service.noneErrorCode) {
+
+                        site.app.closeBusy(loadingObj);
+
+                        //保存字符串到本地浏览器，对象不能直接存储
+                        localStorage.setItem(site.app.setting.localStorageKey.Home, JSON.stringify(parameters));
+
+                        site.app.notify.success("保存成功");
+                    } else {
+                        site.app.notify.error(result.errorMessage);
+                    }
+                })
+
+            },
+
+            Init: function () {
+                page.$Save.click(function () {
+                    page.Save();
+                });
+
+                //获取之前保存到本地浏览器的数据库连接字符串
+                var localStorageJson = localStorage.getItem(site.app.setting.localStorageKey.Home);
+
+                if (localStorageJson !== null || localStorageJson !== "") {
+                    page.$form.serializeJsonObj2FomViaName(JSON.parse(localStorageJson));
+                }
+            }
+        };
+
+        page.Init();
+
+    </script>
+}

@@ -33,7 +33,8 @@
 @section Scripts
 {
     <script>
-        var page, connectionString = null;
+        var baseUrl = site.app.setting.service.baseUrl;
+        var page, localStorageItem = null;
 
         page = {
             $SelectDatabaseTableName: $("#SelectDatabaseTableName"),
@@ -45,18 +46,9 @@
             SelectedArray: [],//存放当前表格中选择的项的ColumnId集合
 
             ListDatabaseTableName: function () {
-                //获取之前保存到本地浏览器的数据库连接字符串
-                connectionString = localStorage.getItem(site.app.setting.key_SqlServerConnectionStrig);
 
-                if (connectionString === null || connectionString === "") {
-
-                    site.app.notify.error("没有配置数据库连接字符串，青岛基础配置页面维护");
-
-                    return;
-                }
-
-                $.post(site.app.setting.baseUrl + "/ListDatabaseTableName", { connectionString: connectionString }, function (result) {
-                    if (result.errorCode === site.app.setting.noneErrorCode) {
+                $.post(baseUrl + "/ListDatabaseTableName", { connectionString: localStorageItem.ConnectionString }, function (result) {
+                    if (result.errorCode === site.app.setting.service.noneErrorCode) {
 
                         //填充数据到下拉组件
 
@@ -88,8 +80,8 @@
 
             LoadSelectedDatabaseTableInfo: function (databaseTableName) {
 
-                $.post(site.app.setting.baseUrl + "/ListDatabaseTableColumn", { connectionString: connectionString, databaseTableName: databaseTableName }, function (result) {
-                    if (result.errorCode === site.app.setting.noneErrorCode) {
+                $.post(baseUrl + "/ListDatabaseTableColumn", { connectionString: localStorageItem.ConnectionString, databaseTableName: databaseTableName }, function (result) {
+                    if (result.errorCode === site.app.setting.service.noneErrorCode) {
 
                         //将数据填充给到表中
                         if (page.DataTable) {
@@ -226,10 +218,10 @@
                 }
 
                 var databaseTableName = $("#SelectDatabaseTableName option:selected").val();
-                var columnIdList = _.pluck(page.SelectedArray, "ColumnId");
+                localStorageItem.columnIdList = _.pluck(page.SelectedArray, "ColumnId");
 
-                $.post(site.app.setting.baseUrl + "/GenerateCode", { connectionString: connectionString, databaseTableName: databaseTableName, columnIdList: columnIdList }, function (result) {
-                    if (result.errorCode === site.app.setting.noneErrorCode) {
+                $.post(baseUrl + "/GenerateCode", { input: localStorageItem }, function (result) {
+                    if (result.errorCode === site.app.setting.service.noneErrorCode) {
                         site.app.notify.success("生成成功");
                     } else {
                         site.app.notify.error(result.errorMessage);
@@ -249,7 +241,20 @@
 
             },
 
+            LoadLocalStorageItem: function () {
+                //获取之前保存到本地浏览器的数据库连接字符串
+                var localStorageJson = localStorage.getItem(site.app.setting.localStorageKey.Home);
+
+                if (localStorageJson !== null || localStorageJson !== "") {
+                    localStorageItem = JSON.parse(localStorageJson);
+                } else {
+                    site.app.notify.error("请先在基础配置页面维护配置信息");
+                }
+            },
+
             Init: function () {
+                page.LoadLocalStorageItem();
+
                 page.$Search.click(function () {
                     page.Search();
                 });

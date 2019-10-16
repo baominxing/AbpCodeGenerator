@@ -1,4 +1,5 @@
-﻿using ABPCodeGenerator.Models;
+﻿using ABPCodeGenerator.Core.Entities;
+using ABPCodeGenerator.Models;
 using ABPCodeGenerator.Utilities;
 using Dapper;
 using Microsoft.AspNetCore.Http;
@@ -38,7 +39,7 @@ namespace ABPCodeGenerator.Services
         public List<dynamic> ListDatabaseTableName(string connectionString)
         {
             var resultList = new List<dynamic>();
-            var executeSql = $@"select object_id id,name text from sys.tables";
+            var executeSql = $@"select object_id id,name text from sys.tables order by text";
             var parameters = new { };
 
             var cachedResult = CacheHelper.Get<List<dynamic>>("ListDatabaseTableName");
@@ -65,7 +66,7 @@ namespace ABPCodeGenerator.Services
             return resultList;
         }
 
-        public List<ColumnInfo> ListDatabaseTableColumn(string connectionString, string databaseTableName)
+        public List<ColumnInfo> ListDatabaseTableColumn(ListDatabaseTableColumnInputDto input)
         {
             var resultList = new List<ColumnInfo>();
             var executeSql = $@"
@@ -134,14 +135,14 @@ FROM syscolumns A
     LEFT JOIN sys.extended_properties F
         ON D.id = F.major_id
            AND F.minor_id = 0
-WHERE D.name = @tablename
+WHERE D.name = @TableName
 ORDER BY A.id,
          A.colorder;
 
 ";
-            var sqlParameters = new { tablename = databaseTableName };
+            var sqlParameters = new { TableName = input.TableName };
 
-            var cachedResult = CacheHelper.Get<List<ColumnInfo>>($"ListDatabaseTableName#{databaseTableName}");
+            var cachedResult = CacheHelper.Get<List<ColumnInfo>>($"ListDatabaseTableName#{input.TableName}");
 
             if (cachedResult != null)
             {
@@ -151,12 +152,12 @@ ORDER BY A.id,
             }
 
 
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(input.ConnectionString))
             {
                 resultList = conn.Query<ColumnInfo>(executeSql, sqlParameters).ToList();
             }
 
-            CacheHelper.Set($"ListDatabaseTableName#{databaseTableName}", resultList);
+            CacheHelper.Set($"ListDatabaseTableName#{input.TableName}", resultList);
 
             return resultList;
         }

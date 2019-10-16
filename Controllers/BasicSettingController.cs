@@ -7,14 +7,13 @@ using ABPCodeGenerator.Utilities;
 using Microsoft.AspNetCore.Cors;
 using System.Data.SqlClient;
 using ABPCodeGenerator.Filters;
-using ABPCodeGenerator.Controllers.Dtos;
 
 namespace ABPCodeGenerator.Controllers
 {
     [EnableCors("AllowAll")]
-    public class HomeController : BaseController
+    public class BasicSettingController : BaseController
     {
-        public HomeController(ILogger<BaseController> logger) : base(logger)
+        public BasicSettingController(ILogger<BaseController> logger) : base(logger)
         {
         }
 

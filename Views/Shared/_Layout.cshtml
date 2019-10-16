@@ -20,6 +20,10 @@
             margin-top: 11px;
             margin-left: 10px;
         }
+
+        .error {
+            border-color: red
+        }
     </style>
 </head>
 <body>
@@ -54,7 +58,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewBag.PageName == "Home" ? "active" : string.Empty)" href="/Home">
+                            <a class="nav-link @(ViewBag.PageName == "BasicSetting" ? "active" : string.Empty)" href="/BasicSetting">
                                 <i class="fa fa-circle-o"></i> 基础配置
                             </a>
                         </li>
@@ -84,6 +88,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.min.js"></script>
     <script src="~/lib/layer/layer.js"></script>
     <script src="~/lib/underscore.js/underscore-min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

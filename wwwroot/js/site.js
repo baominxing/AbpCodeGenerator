@@ -21,9 +21,13 @@ site.app.ico = "";
 site.app.copyright = "";
 
 site.app.setting = {
-    baseUrl: window.location.href,
-    noneErrorCode: "0",
-    key_SqlServerConnectionStrig: "SqlServerConnectionStrig"
+    service: {
+        baseUrl: window.location.href,
+        noneErrorCode: "0"
+    },
+    localStorageKey: {
+        Home: "Home"
+    }
 };
 
 site.app.notify = {
@@ -54,4 +58,57 @@ site.app.notify = {
                 closeBtn: 0
             });
     }
+};
+
+site.app.setBusy = function (message) {
+    //注意，layer.msg默认3秒自动关闭，如果数据加载耗时比较长，需要设置time
+    return layer.msg(message, { icon: 16, shade: 0.1, shadeClose: false, time: 60000 });
+};
+
+site.app.closeBusy = function (obj) {
+    layer.close(obj);
+};
+
+$.validator.setDefaults({
+    // 错误插入位置，以及插入的内容
+    errorPlacement: function (error, element) {
+        $(element).addClass("error");
+    },
+    submitHandler: function () {
+    },
+    // 验证成功后调用的方法
+    success: function (element) {
+        $(element).removeClass("error");
+    }
+});
+
+// 序列化表单元素为json对象(按name匹配)
+$.fn.serializeFrom2JsonObjViaName = function () {
+    var o = { "unique_id": new Date().getTime(), "state": false };
+    var a = this.serializeArray();
+    $.each(a, function () {
+        if (o[this.name]) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
+
+// 将json对象序列化自动填充到表单元素中(按name匹配)
+$.fn.serializeJsonObj2FomViaName = function (o) {
+    var $from = this;
+    var a = $from.serializeArray();
+
+    $.each(a, function () {
+        if (o[this.name]) {
+            $from.find("#" + this.name).val(o[this.name]);
+        } else {
+            $from.find("#" + this.name).val("");
+        }
+    });
 };

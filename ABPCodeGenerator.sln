@@ -5,10 +5,6 @@ VisualStudioVersion = 16.0.29318.209
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ABPCodeGenerator", "ABPCodeGenerator.csproj", "{AB9CE680-D999-49EB-8DA8-63AC58E294F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABPCodeGenerator.Application", "..\ABPCodeGenerator.Application\ABPCodeGenerator.Application.csproj", "{BE51CD37-C86B-4FC7-9841-FD770ADADD96}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABPCodeGenerator.Core", "..\ABPCodeGenerator.Core\ABPCodeGenerator.Core.csproj", "{29574E1C-4519-4F46-8116-A8F4F51DC124}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,14 +15,6 @@ Global
 		{AB9CE680-D999-49EB-8DA8-63AC58E294F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB9CE680-D999-49EB-8DA8-63AC58E294F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB9CE680-D999-49EB-8DA8-63AC58E294F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE51CD37-C86B-4FC7-9841-FD770ADADD96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE51CD37-C86B-4FC7-9841-FD770ADADD96}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE51CD37-C86B-4FC7-9841-FD770ADADD96}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE51CD37-C86B-4FC7-9841-FD770ADADD96}.Release|Any CPU.Build.0 = Release|Any CPU
-		{29574E1C-4519-4F46-8116-A8F4F51DC124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{29574E1C-4519-4F46-8116-A8F4F51DC124}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{29574E1C-4519-4F46-8116-A8F4F51DC124}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{29574E1C-4519-4F46-8116-A8F4F51DC124}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
