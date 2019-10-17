@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ABPCodeGenerator.Core.Entities;
 using ABPCodeGenerator.Filters;
 using ABPCodeGenerator.Services;
 using ABPCodeGenerator.Utilities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,12 +16,14 @@ namespace ABPCodeGenerator.Controllers
     public class GenerateCodeController : BaseController
     {
         private readonly ITemplateService templateService;
-
+        private readonly IWebHostEnvironment webHostEnvironment;
         public GenerateCodeController(
             ITemplateService templateService,
+            IWebHostEnvironment webHostEnvironment,
             ILogger<BaseController> logger) : base(logger)
         {
             this.templateService = templateService;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index()
@@ -37,7 +41,7 @@ namespace ABPCodeGenerator.Controllers
 
             try
             {
-                resultList = this.templateService.ListDatabaseTableName(input.ConnectionString);
+                resultList = this.templateService.ListDatabaseTableName(input);
             }
             catch (Exception ex)
             {
@@ -75,15 +79,15 @@ namespace ABPCodeGenerator.Controllers
         {
             var errorMessage = string.Empty;
             var errorCode = AppConfig.ErrorCodes.NONE;
-
+            var zipFilePath = string.Empty;
             try
             {
                 //取出所选表所有的列
-                var originalDatabaseTableColumnList = this.templateService.ListDatabaseTableColumn(input);
+                var originalDatabaseTableColumnList = this.templateService.ListDatabaseTableColumn(new ListDatabaseTableColumnInputDto() { ConnectionString = input.ConnectionString, TableName = input.TableName });
                 //取出页面上选择的列
                 var selectedDatabaseTableColumnList = originalDatabaseTableColumnList.Where(s => input.ColumnIdList.Contains(s.ColumnId)).ToList();
                 //取出页面上选择的列
-                this.templateService.GenerateCode(selectedDatabaseTableColumnList);
+                zipFilePath = this.templateService.GenerateCode(selectedDatabaseTableColumnList);
 
             }
             catch (Exception ex)
@@ -92,7 +96,17 @@ namespace ABPCodeGenerator.Controllers
                 errorMessage = ex.Message;
             }
 
-            return new JsonResult(new { errorCode, errorMessage });
+            return new JsonResult(new { errorCode, errorMessage, zipFilePath = zipFilePath });
+        }
+
+        [ParameterNullOrEmptyFilter]
+        public FileResult DownloadGeneratedZipFile(string relativeFilePath)
+        {
+            string filePath = Path.Combine(this.webHostEnvironment.ContentRootPath, relativeFilePath);
+
+            FileStream fstrm = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read);
+
+            return File(fstrm, "application/octet-stream", Guid.NewGuid() + ".zip"); //welcome.txt是客户端保存的名字
         }
     }
 
@@ -103,8 +117,8 @@ namespace ABPCodeGenerator.Controllers
 
     public class ListDatabaseTableColumnInputDto
     {
-        public string ConnectionString { get; internal set; }
-        public object TableName { get; internal set; }
+        public string ConnectionString { get; set; }
+        public string TableName { get; set; }
     }
 
     public class GenerateCodeInputDto

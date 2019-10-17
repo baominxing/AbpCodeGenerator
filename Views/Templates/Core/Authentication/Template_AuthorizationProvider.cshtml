@@ -18,8 +18,8 @@ namespace @(Model.ProjectName).Authorization
             var @(Model.ModuleName) = pages.CreateChildPermission(PermissionNames.Pages_@(Model.ModuleName), L("@(Model.ModuleName)"));
             
             //如果是生成的是页面，则拷贝下面两行即可，如果是一个新的模块的页面，则拷贝整个region内的代码
-            var @(Model.PageName) = @(Model.ModuleName).CreateChildPermission(PermissionNames.Pages_@(Model.ModuleName)_@(Model.PageName), L("@(Model.PageName)"));
-            @(Model.PageName).CreateChildPermission(PermissionNames.Pages_@(Model.ModuleName)_@(Model.PageName)_Manage, L("@(Model.PageName)Manage"));
+            var  @(Model.ModuleName)_@(Model.PageName) = @(Model.ModuleName).CreateChildPermission(PermissionNames.Pages_@(Model.ModuleName)_@(Model.PageName), L("@(Model.PageName)"));
+            @(Model.ModuleName)_@(Model.PageName).CreateChildPermission(PermissionNames.Pages_@(Model.ModuleName)_@(Model.PageName)_Manage, L("@(Model.PageName)Manage"));
             #endregion
         }
     }

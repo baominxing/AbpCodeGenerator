@@ -1,8 +1,9 @@
-﻿@model ABPCodeGenerator.Models.CreateOrUpdateModalJsViewModel
+﻿@using ABPCodeGenerator.Utilities
+@model ABPCodeGenerator.Models.CreateOrUpdateModalJsViewModel
 //# sourceURL=dynamic_CreateOrUpdateModal.js
 (function () {
     app.modals.CreateOrUpdateModal = function () {
-        var service = abp.services.app.@(Model.EntityName.ToLower()),
+        var service = abp.services.app.@(Model.EntityName.ToLowerFirstLetter()),
             _modalManager,
             $createOrUpdateForm = null;
 

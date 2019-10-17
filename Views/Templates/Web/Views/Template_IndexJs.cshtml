@@ -1,7 +1,8 @@
-﻿@model ABPCodeGenerator.Models.IndexJsViewModel
+﻿@using ABPCodeGenerator.Utilities
+@model ABPCodeGenerator.Models.IndexJsViewModel
 (function () {
     $(function () {
-        var service = abp.services.app.@(Model.EntityName.ToLower());
+        var service = abp.services.app.@(Model.EntityName.ToLowerFirstLetter());
         var permissions = { manage: abp.auth.hasPermission("Pages.@(Model.ModuleName).@(Model.PageName).Manage") };
         var page = null;
 
@@ -23,7 +24,7 @@
             },
 
             remove: function (rowData) {
-                abp.message.confirm(app.localize("WhetherToDelete@(Model.EntityName)",
+                abp.message.confirm(app.localize("WhetherToDelete@(Model.EntityName)"),
                     function (isConfirmed) {
                         if (isConfirmed) {
                             service.delete@(Model.EntityName)({ Id: rowData.id })
@@ -32,7 +33,7 @@
                                     page.dataTable.ajax.reload(null);
                                 });
                         }
-                    }));
+                    });
             },
 
             search: function () {

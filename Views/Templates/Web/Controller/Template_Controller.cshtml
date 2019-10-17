@@ -10,15 +10,15 @@ using @(Model.ProjectName).@(Model.ModuleName);
 using @(Model.ProjectName).@(Model.ModuleName).Dto;
 using @(Model.ProjectName).Web.Models.@(Model.ModuleName);
 
-namespace @(Model.ProjectName).Web.Controllers.@(Model.PageName)
+namespace @(Model.ProjectName).Web.Controllers.@(Model.EntityName)
 {
-    [AbpMvcAuthorize(PermissionNames.Pages_@(Model.ModuleName)_@(Model.PageName))]
-    public class @(Model.PageName)Controller : BtlControllerBase
+    [AbpMvcAuthorize(PermissionNames.Pages_@(Model.ModuleName)_@(Model.EntityName))]
+    public class @(Model.EntityName)Controller : BtlControllerBase
     {
         // GET: Process
         private readonly I@(Model.EntityName)AppService @(Model.EntityName.ToLower())AppService;
 
-        public OrderMaintainController(I@(Model.EntityName)AppService @(Model.EntityName.ToLower())AppService)
+        public @(Model.EntityName)Controller(I@(Model.EntityName)AppService @(Model.EntityName.ToLower())AppService)
         {
             this.@(Model.EntityName.ToLower())AppService = @(Model.EntityName.ToLower())AppService;
         }

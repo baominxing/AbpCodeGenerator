@@ -17,8 +17,7 @@ namespace @(Model.ProjectName).@(Model.EntityName)
 {
     public class @(Model.EntityName)AppService : BtlAppServiceBase, I@(Model.EntityName)AppService
     {
-    private readonly IRepository<@(Model.EntityName), @(Model.EntityPrimaryKeyType)>
-        @(Model.EntityName.ToLower())Repository;
+        private readonly IRepository<@(Model.EntityName), @(Model.EntityPrimaryKeyType)> @(Model.EntityName.ToLower())Repository;
 
         public @(Model.EntityName)AppService(
         IRepository<@(Model.EntityName), @(Model.EntityPrimaryKeyType)>
@@ -28,7 +27,7 @@ namespace @(Model.ProjectName).@(Model.EntityName)
             this.@(Model.EntityName.ToLower())Repository = @(Model.EntityName.ToLower())Repository;
             }
 
-            public async Task<DatatablesPagedResultOutput<@(Model.EntityName)Dto>> List@(Model.EntityName)(@(Model.EntityName)InputDto input)
+        public async Task<DatatablesPagedResultOutput<@(Model.EntityName)Dto>> List@(Model.EntityName)(@(Model.EntityName)InputDto input)
         {
             var query = from @(Model.EntityName.ToLower()) in this.@(Model.EntityName.ToLower())Repository.GetAll()
                         select new @(Model.EntityName)Dto

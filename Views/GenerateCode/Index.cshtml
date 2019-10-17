@@ -80,7 +80,7 @@
 
             LoadSelectedDatabaseTableInfo: function (databaseTableName) {
 
-                $.post(baseUrl + "/ListDatabaseTableColumn", { connectionString: localStorageItem.ConnectionString, databaseTableName: databaseTableName }, function (result) {
+                $.post(baseUrl + "/ListDatabaseTableColumn", { connectionString: localStorageItem.ConnectionString, tableName: databaseTableName }, function (result) {
                     if (result.errorCode === site.app.setting.service.noneErrorCode) {
 
                         //将数据填充给到表中
@@ -200,6 +200,9 @@
                                     "data": "Desc"
                                 }
                             ]
+                        }).on('draw.dt', function (e, settings) {
+                            //页行改变或选择其他页的时候，保持选择
+                            page.SelectAll();
                         });
 
                     } else {
@@ -223,10 +226,28 @@
                 $.post(baseUrl + "/GenerateCode", { input: localStorageItem }, function (result) {
                     if (result.errorCode === site.app.setting.service.noneErrorCode) {
                         site.app.notify.success("生成成功");
+
+                        page.DownloadGeneratedZipFile(result.zipFilePath);
                     } else {
                         site.app.notify.error(result.errorMessage);
                     }
                 })
+            },
+
+            SelectAll: function () {
+
+                var $self = $(".checkbox-all");
+                page.SelectedArray = [];
+
+                if ($self.prop("checked")) {
+                    var data = page.DataTable.fnGetData();
+                    _.each(data, function (item) {
+                        page.SelectedArray.push(item);
+                    });
+                }
+
+                //界面上体现全选/全不选
+                $self.closest(".dataTables_wrapper").find(".checkbox-item").prop("checked", $self.prop("checked"));
             },
 
             SelectItem: function ($this, item) {
@@ -252,6 +273,11 @@
                 }
             },
 
+            DownloadGeneratedZipFile: function (relativeFilePath) {
+
+                window.location.href = baseUrl + "/DownloadGeneratedZipFile?relativeFilePath=" + relativeFilePath;
+            },
+
             Init: function () {
                 page.LoadLocalStorageItem();
 
@@ -266,18 +292,7 @@
                 page.ListDatabaseTableName();
 
                 $(document).on("click", ".checkbox-all", function () {
-                    var $self = $(this);
-                    page.SelectedArray = [];
-
-                    if ($self.prop("checked")) {
-                        var data = page.DataTable.fnGetData();
-                        _.each(data, function (item) {
-                            page.SelectedArray.push(item);
-                        });
-                    }
-
-                    //界面上体现全选/全不选
-                    $self.closest(".dataTables_wrapper").find(".checkbox-item").prop("checked", $self.prop("checked"));
+                    page.SelectAll();
                 });
             }
         };

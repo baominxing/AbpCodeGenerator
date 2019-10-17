@@ -1,6 +1,6 @@
 ﻿@model ABPCodeGenerator.Models.CreateOrUpdateModalCshtmlViewModel
 @Html.Raw($"@using {Model.ProjectName}.{Model.ModuleName};")
-@Html.Raw($"@using {Model.ProjectName}.Models.Common.Modals;")
+@Html.Raw($"@using {Model.ProjectName}.Web.Models.Common.Modals;")
 @Html.Raw($"@model {Model.ProjectName}.Web.Models.{Model.ModuleName}.{Model.EntityName}ViewModel")
 
 @Html.Raw($"@Html.Partial(\"~/Views/Common/Modals/_ModalHeader.cshtml\", new ModalHeaderViewModel(Model.IsEditMode ? L(\"Editor\") : L(\"Create\")))")
@@ -11,13 +11,11 @@
             @{
                 foreach (var item in Model.AllColumnList)
                 {
-                    {
-                        <div class="form-group form-md-line-input form-md-floating-label col-xs-12 col-sm-6">
-                            <label>@Html.Raw($"@L(\"{item.ColumnName}\")")</label>
-                            <input class="form-control @item.ColumnName" type="text" name="@item.ColumnName" required maxlength="100"
-                                   value="@Html.Raw($"@(Model.IsEditMode ? Model.Dto.{item.ColumnName} : string.Empty)")">
-                        </div>
-                    }
+                    <div class="form-group form-md-line-input form-md-floating-label col-xs-12 col-sm-6">
+                        <label>@Html.Raw($"@L(\"{item.ColumnName}\")")</label>
+                        <input class="form-control @item.ColumnName" type="text" name="@item.ColumnName" required maxlength="100"
+                               value="@Html.Raw($"@(Model.IsEditMode ? Model.Dto.{item.ColumnName} : {item.GetColumnTypeDefaultValue()})")">
+                    </div>
                 }
             }
 

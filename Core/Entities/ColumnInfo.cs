@@ -30,5 +30,34 @@ namespace ABPCodeGenerator.Core.Entities
         {
             return this.AllowNull.ToLower() == Nullable.ToLower() && TypeHelper.SqlServerType2CSharpType(this.DataType).ToLower() != String.ToLower();
         }
+
+        public dynamic GetColumnTypeDefaultValue()
+        {
+            var type = TypeHelper.SqlServerType2CSharpType(this.DataType);
+
+            switch (type)
+            {
+                case "byte":
+                case "short":
+                case "int":
+                case "long":
+                case "decimal":
+                case "float":
+                case "double":
+                case "Single":
+                case "Int16":
+                    return 0;
+                case "string":
+                    return "string.Empty";
+                case "DateTime":
+                    return "DateTime.Now";
+                case "bool":
+                    return "false";
+                case "Guid":
+                    return "Guid.NewGuid()";
+                default:
+                    return "string.Empty";
+            }
+        }
     }
 }

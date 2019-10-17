@@ -7,15 +7,15 @@ namespace ABPCodeGenerator.Models
     {
         public string ProjectName = "WIMI.BTL";
 
-        public string ModuleName = "Order";
+        public string ModuleName = "TestEntity";
 
-        public string PageName = "OrderMaintain";
+        public string PageName = "TestEntity";
 
-        public string EntityName = "Order";
+        public string EntityName = "TestEntity";
 
-        public string EntityPrimaryKeyType = "long";
+        public string EntityPrimaryKeyType = "int";
 
-        public string TableName = "Orders";
+        public string TableName = "TestEntities";
 
         public string Sorting = "Id";
 

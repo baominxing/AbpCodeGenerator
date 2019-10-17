@@ -14,6 +14,6 @@ namespace ABPCodeGenerator.Services
 
         List<ColumnInfo> ListDatabaseTableColumn(ListDatabaseTableColumnInputDto input);
 
-        void GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList);
+        string GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList);
     }
 }

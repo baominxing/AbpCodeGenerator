@@ -1,4 +1,5 @@
-﻿using ABPCodeGenerator.Core.Entities;
+﻿using ABPCodeGenerator.Controllers;
+using ABPCodeGenerator.Core.Entities;
 using ABPCodeGenerator.Models;
 using ABPCodeGenerator.Utilities;
 using Dapper;
@@ -36,7 +37,7 @@ namespace ABPCodeGenerator.Services
             this.serviceProvider = serviceProvider;
         }
 
-        public List<dynamic> ListDatabaseTableName(string connectionString)
+        public List<dynamic> ListDatabaseTableName(ListDatabaseTableNameInputDto input)
         {
             var resultList = new List<dynamic>();
             var executeSql = $@"select object_id id,name text from sys.tables order by text";
@@ -51,7 +52,7 @@ namespace ABPCodeGenerator.Services
                 return resultList;
             }
 
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(input.ConnectionString))
             {
                 var queryList = conn.Query<dynamic>(executeSql, parameters).ToList();
 
@@ -166,299 +167,439 @@ ORDER BY A.id,
         /// 生成运行代码
         /// </summary>
         /// <param name="selectedDatabaseTableColumnList"></param>
-        public void GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList)
+        public string GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList)
         {
-            var targetFolder = Path.Combine($"GeneratedCodes/{DateTime.Now.ToString("yyyyMMdd")}");
+            var baseViewModel = new TemplateViewModel();
+            var targetBaseFolder = Path.Combine($"GeneratedCodes/{DateTime.Now.ToString("yyyyMMdd")}");
+            var targetSubFolder = string.Empty;
             var targetFile = string.Empty;
+            var targetFilePath = string.Empty;
             var renderedString = string.Empty;
-
-            if (!Directory.Exists(targetFolder))
-            {
-                Directory.CreateDirectory(targetFolder);
-            }
+            var relativeFolderPath = string.Empty;
 
             #region Application/EntityDto
-            targetFile = "OrderDto.cs";
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Application/{baseViewModel.ModuleName}/Dtos");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
+            targetFile = $"{baseViewModel.EntityName}Dto.cs";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Application/Dtos/Template_EntityDto", new EntityDtoViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
 
             #endregion
 
             #region Application/EntityInputDto
-            targetFile = "OrderInputDto.cs";
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Application/{baseViewModel.ModuleName}/Dtos");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
+            targetFile = $"{baseViewModel.EntityName}InputDto.cs";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Application/Dtos/Template_EntityInputDto", new EntityInputDtoViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
 
             #endregion
 
             #region Application/IAppService
-            targetFile = "IOrderAppService.cs";
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Application/{baseViewModel.ModuleName}");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
+            targetFile = $"I{ baseViewModel.EntityName}AppService.cs";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Application/Template_IAppService", new IAppServiceViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
 
             #region Application/AppService
-            targetFile = "OrderAppService.cs";
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Application/{baseViewModel.ModuleName}");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
+            targetFile = $"{baseViewModel.EntityName}AppService.cs";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Application/Template_AppService", new AppServiceViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
 
             #region Core/AuthorizationProvider
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Core/Authorization");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "BtlAuthorizationProvider.cs";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Core/Authentication/Template_AuthorizationProvider", new AuthorizationProviderViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
 
             #region Core/PermissionNames
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Core/Authorization");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "PermissionNames.cs";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Core/Authentication/Template_PermissionNames", new PermissionNamesViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
 
             #region Web/NavigationProvider
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/App_Start/Navigation");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "NavigationProvider.cs";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Web/App_Start/Navigation/Template_NavigationProvider", new NavigationProviderViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
 
             #region Web/PageNames
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/App_Start/Navigation");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "PageNames.cs";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Web/App_Start/Navigation/Template_PageNames", new PageNamesViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
 
             #region Web/Controller
-            targetFile = "Controller.cs";
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Controllers/{baseViewModel.ModuleName}");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
+            targetFile = $"{baseViewModel.EntityName}Controller.cs";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Web/Controller/Template_Controller", new ControllerViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
 
 
             #region Web/ViewModel
-            targetFile = "ViewModel.cs";
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Models/{baseViewModel.ModuleName}");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
+            targetFile = $"{baseViewModel.EntityName}ViewModel.cs";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Web/ViewModel/Template_ViewModel", new ViewModelViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
 
             #region Web/CreateOrUpdateModal.cshtml
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Views/{baseViewModel.ModuleName}/{baseViewModel.PageName}");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "CreateOrUpdateModal.cshtml";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_CreateOrUpdateModalCshtml", new CreateOrUpdateModalCshtmlViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
 
             #region Web/CreateOrUpdateModal.js
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Views/{baseViewModel.ModuleName}/{baseViewModel.PageName}");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "CreateOrUpdateModal.js";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_CreateOrUpdateModalJs", new CreateOrUpdateModalJsViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
 
             #region Web/Index.cshtml
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Views/{baseViewModel.ModuleName}/{baseViewModel.PageName}");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "Index.cshtml";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_IndexCshtml", new IndexCshtmlViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
 
             #region Web/Index.js
+            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Views/{baseViewModel.ModuleName}/{baseViewModel.PageName}");
+            relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "Index.js";
 
-            if (File.Exists(Path.Combine(targetFolder, targetFile)))
+            if (!Directory.Exists(relativeFolderPath))
             {
-                File.Delete(Path.Combine(targetFolder, targetFile));
+                Directory.CreateDirectory(relativeFolderPath);
+            }
 
-                using (File.Create(Path.Combine(targetFolder, targetFile)))
-                {
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
 
-                }
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
             }
 
             renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_IndexJs", new IndexJsViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
 
-            File.WriteAllText(Path.Combine(targetFolder, targetFile), renderedString, Encoding.UTF8);
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
 
             renderedString = string.Empty;
             #endregion
+
+            #region 压缩生成的文件
+            var zipFilePath = Path.Combine(targetBaseFolder, $"{DateTime.Now.ToString("yyyyMMdd")}.zip");
+
+            if (File.Exists(zipFilePath))
+            {
+                File.Delete(zipFilePath);
+            }
+
+            var zip = new ZipHelper();
+
+            zip.ZipFileFromDirectory(targetBaseFolder, zipFilePath, 5);
+            #endregion
+
+            return zipFilePath;
         }
 
         public async Task<string> RenderToStringAsync(string viewName, object model)
