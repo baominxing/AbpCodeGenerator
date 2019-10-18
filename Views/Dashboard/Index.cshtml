@@ -9,6 +9,39 @@
         <h1 class="h2">工作台<small></small></h1>
     </div>
 
-    <span class="col-form-label">这里准备放置应用程序的使用说明</span>
+    <span class="col-form-label">
+        <pre>
+ 使用说明：
+
+第一步：需要现在基础配置页面，维护一些基础信息，例如数据库字段
+
+第二步：在生成代码页面，选择之前填写的要生成的数据库表后，点击查询，选择要生成哪些字段，然后点击生成按钮，会生一个压缩包下载，解压后会看到一下文件
+
+Application/Dtos/Dto.cs
+Application/Dtos/InputDto.cs
+Application/AppService.cs
+Application/IAppService.cs
+Core/Authentication/BtlAuthenticator.cs
+Core/Authentication/PermissionNames.cs
+Web/App_Start/Navigation/NavigationProvider.cs
+Web/App_Start/Navigation/PageNames.cs
+Web/Controllers/Controller.cs
+Web/Models/ViewModel.cs
+Web/Views/CreateOrUpdateModal.cshtml
+Web/Views/CreateOrUpdateModal.js
+Web/Views/Index.cshtml
+Web/Views/Index.js
+
+下面的文件需要拷贝相应内容到目标项目中，拷贝完成后，可以删除
+Core/Authentication/BtlAuthenticator.cs
+Core/Authentication/PermissionNames.cs
+Web/App_Start/Navigation/NavigationProvider.cs
+Web/App_Start/Navigation/PageNames.cs
+
+剩下的文件可以整个拷贝复制到站点目录即可。
+
+PS:目前功能比较间简单，如果有在使用中需要有改进的地方，可以把建议提到<a href="https://www.tapd.cn/35889048/prong/stories/stories_list">TAPD</a>
+</pre>
+    </span>
 
 </div>
