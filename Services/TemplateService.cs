@@ -43,15 +43,6 @@ namespace ABPCodeGenerator.Services
             var executeSql = $@"select object_id id,name text from sys.tables order by text";
             var parameters = new { };
 
-            var cachedResult = CacheHelper.Get<List<dynamic>>("ListDatabaseTableName");
-
-            if (cachedResult != null)
-            {
-                resultList = cachedResult;
-
-                return resultList;
-            }
-
             using (var conn = new SqlConnection(input.ConnectionString))
             {
                 var queryList = conn.Query<dynamic>(executeSql, parameters).ToList();
@@ -61,8 +52,6 @@ namespace ABPCodeGenerator.Services
                     resultList.Add(new { id = item.id, text = item.text });
                 }
             }
-
-            CacheHelper.Set("ListDatabaseTableName", resultList);
 
             return resultList;
         }
@@ -143,22 +132,11 @@ ORDER BY A.id,
 ";
             var sqlParameters = new { TableName = input.TableName };
 
-            var cachedResult = CacheHelper.Get<List<ColumnInfo>>($"ListDatabaseTableName#{input.TableName}");
-
-            if (cachedResult != null)
-            {
-                resultList = cachedResult;
-
-                return resultList;
-            }
-
 
             using (var conn = new SqlConnection(input.ConnectionString))
             {
                 resultList = conn.Query<ColumnInfo>(executeSql, sqlParameters).ToList();
             }
-
-            CacheHelper.Set($"ListDatabaseTableName#{input.TableName}", resultList);
 
             return resultList;
         }
@@ -167,9 +145,19 @@ ORDER BY A.id,
         /// 生成运行代码
         /// </summary>
         /// <param name="selectedDatabaseTableColumnList"></param>
-        public string GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList)
+        public string GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList, GenerateCodeInputDto input)
         {
-            var baseViewModel = new TemplateViewModel();
+            var baseViewModel = new TemplateViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName
+            };
+
             var targetBaseFolder = Path.Combine($"GeneratedCodes/{DateTime.Now.ToString("yyyyMMdd")}");
             var targetSubFolder = string.Empty;
             var targetFile = string.Empty;
@@ -197,7 +185,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Application/Dtos/Template_EntityDto", new EntityDtoViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Application/Dtos/Template_EntityDto", new EntityDtoViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -227,7 +225,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Application/Dtos/Template_EntityInputDto", new EntityInputDtoViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Application/Dtos/Template_EntityInputDto", new EntityInputDtoViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -257,7 +265,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Application/Template_IAppService", new IAppServiceViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Application/Template_IAppService", new IAppServiceViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -286,7 +304,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Application/Template_AppService", new AppServiceViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Application/Template_AppService", new AppServiceViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -315,7 +343,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Core/Authentication/Template_AuthorizationProvider", new AuthorizationProviderViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Core/Authentication/Template_AuthorizationProvider", new AuthorizationProviderViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -344,7 +382,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Core/Authentication/Template_PermissionNames", new PermissionNamesViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Core/Authentication/Template_PermissionNames", new PermissionNamesViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -373,7 +421,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Web/App_Start/Navigation/Template_NavigationProvider", new NavigationProviderViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Web/App_Start/Navigation/Template_NavigationProvider", new NavigationProviderViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -402,7 +460,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Web/App_Start/Navigation/Template_PageNames", new PageNamesViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Web/App_Start/Navigation/Template_PageNames", new PageNamesViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -431,7 +499,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Web/Controller/Template_Controller", new ControllerViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Web/Controller/Template_Controller", new ControllerViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -439,7 +517,6 @@ ORDER BY A.id,
 
             renderedString = string.Empty;
             #endregion
-
 
             #region Web/ViewModel
             targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Models/{baseViewModel.ModuleName}");
@@ -461,7 +538,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Web/ViewModel/Template_ViewModel", new ViewModelViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Web/ViewModel/Template_ViewModel", new ViewModelViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -490,7 +577,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_CreateOrUpdateModalCshtml", new CreateOrUpdateModalCshtmlViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_CreateOrUpdateModalCshtml", new CreateOrUpdateModalCshtmlViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -519,7 +616,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_CreateOrUpdateModalJs", new CreateOrUpdateModalJsViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_CreateOrUpdateModalJs", new CreateOrUpdateModalJsViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -548,7 +655,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_IndexCshtml", new IndexCshtmlViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_IndexCshtml", new IndexCshtmlViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 
@@ -577,7 +694,17 @@ ORDER BY A.id,
 
             }
 
-            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_IndexJs", new IndexJsViewModel() { AllColumnList = selectedDatabaseTableColumnList }).Result;
+            renderedString = this.RenderToStringAsync("Templates/Web/Views/Template_IndexJs", new IndexJsViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                AllColumnList = selectedDatabaseTableColumnList
+            }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
 

@@ -87,7 +87,7 @@ namespace ABPCodeGenerator.Controllers
                 //取出页面上选择的列
                 var selectedDatabaseTableColumnList = originalDatabaseTableColumnList.Where(s => input.ColumnIdList.Contains(s.ColumnId)).ToList();
                 //取出页面上选择的列
-                zipFilePath = this.templateService.GenerateCode(selectedDatabaseTableColumnList);
+                zipFilePath = this.templateService.GenerateCode(selectedDatabaseTableColumnList, input);
 
             }
             catch (Exception ex)
