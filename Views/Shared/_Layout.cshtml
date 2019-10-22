@@ -4,10 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/datatables/css/jquery.dataTables.min.css" />
-    <link rel="stylesheet" href="~/css/dashboard.css" />
     <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
     <link rel="stylesheet" href="~/lib/layer/skin/layer.css" />
 
@@ -16,6 +15,13 @@
     </script>
 
     <style>
+        :root {
+            --browser_height: calc(50vw);
+            --aside_width: 15%;
+            --aside_logo_height: 50px;
+            --aside_ui_li_a_color: #b8c7ce;
+        }
+
         .datatable_l {
             margin-top: 11px;
             margin-left: 10px;
@@ -24,66 +30,321 @@
         .error {
             border-color: red
         }
+
+        aside {
+            width: var(--aside_width);
+            height: var(--browser_height);
+            background-color: #222d32;
+            position: fixed;
+            color: snow;
+        }
+
+            aside > div.logo {
+                width: var(--aside_width);
+                height: var(--aside_logo_height);
+                text-align: center;
+                font-size: x-large;
+                display: table-cell;
+                vertical-align: middle;
+                box-shadow: inset 0px 0px 5px 0px black;
+            }
+
+                aside > div.logo a {
+                    text-decoration: none;
+                }
+
+            aside > ul.menu {
+                height: var(--browser_height);
+                list-style-type: none;
+                padding: 0px;
+                margin: 0px;
+                background-color: antiquewhite;
+                overflow: auto;
+            }
+
+                aside > ul.menu li {
+                    padding: 10px;
+                }
+
+                    aside > ul.menu li a {
+                        padding-right: 30px;
+                        text-decoration: none;
+                        color: var(--aside_ui_li_a_color);
+                    }
+
+        body div.content {
+            margin-left: var(--aside_width);
+        }
     </style>
 </head>
 <body>
-    <header class="navbar navbar-dark bg-dark fixed-top bg-secondary flex-md-nowrap p-0">
-        <span class="navbar-brand col-md-6 mr-0 text-left">ABPCodeGenerator</span>
-        <form class="form-inline my-2 my-lg-0 ml-auto">
-            <div class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-            </div>
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">登出</button>
 
-        </form>
-    </header>
-
-    <div class="container-fluid">
-        <div class="row">
-            <nav class="col-sm-12 col-md-1 col-lg-1 d-none d-md-block bg-light sidebar">
-                <div class="sidebar-sticky">
-                    <ul class="nav nav-pills text-left flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewBag.PageName == "Dashboard" ? "active" : string.Empty)" href="/Dashboard">
-                                <i class="fa fa-circle-o"></i> 工作台
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewBag.PageName == "BasicSetting" ? "active" : string.Empty)" href="/BasicSetting">
-                                <i class="fa fa-circle-o"></i> 基础配置
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewBag.PageName == "GenerateCode" ? "active" : string.Empty)" href="/GenerateCode">
-                                <i class="fa fa-circle-o"></i> 生成模板
-                            </a>
-                        </li>
-
-                    </ul>
-                </div>
-            </nav>
-
-            <main role="main" class="col-sm-12 col-md-11 col-lg-11 bg-white">
-                @RenderBody()
-            </main>
+    @*左侧菜单区域*@
+    <aside>
+        @*头部区域，可以用于显示网站的名称，logo等*@
+        <div class="logo">
+            <i></i>
+            <a href="javascript:;">ABPCodeGenerator</a>
         </div>
+
+        @*菜单区域*@
+
+        <ul class="menu">
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle-o"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle-o"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle-o"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle-o"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="auto">
+                    <i class="fa fa-circle"></i>
+                    <span style="padding:5px;">工艺卡片管理</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <div class="content">
+        <h2>响应式边栏导航实例</h2>
+        <p>该实例在屏幕宽度小于 900px 时导航栏为顶部水平导航栏，如果大于 900px 导航栏会在左边，且是固定的。</p>
+        <p>如果屏幕宽度小于 400px 会变为垂直导航栏。</p>
+        <h3>重置浏览器窗口大小，查看效果。</h3>
     </div>
 
-    <footer class="navbar navbar-dark bg-dark fixed-bottom justify-content-center">
-        <a href="#">
-            <strong>Copyright © 2017-@DateTime.Now.ToString("yyyy") 上海微茗智能科技有限公司.</strong> All rights reserved.
-        </a>
+    @RenderBody()
 
-    </footer>
+    @*<header class="navbar navbar-dark bg-dark fixed-top bg-secondary flex-md-nowrap p-0">
+            <span class="navbar-brand col-md-6 mr-0 text-left">ABPCodeGenerator</span>
+            <form class="form-inline my-2 my-lg-0 ml-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">登出</button>
+
+            </form>
+        </header>
+
+        <div class="container-fluid">
+            <div class="row">
+                <nav class="col-sm-12 col-md-1 col-lg-1 d-none d-md-block bg-light sidebar">
+                    <div class="sidebar-sticky">
+                        <ul class="nav nav-pills text-left flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewBag.PageName == "Dashboard" ? "active" : string.Empty)" href="/Dashboard">
+                                    <i class="fa fa-circle-o"></i> 工作台
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewBag.PageName == "BasicSetting" ? "active" : string.Empty)" href="/BasicSetting">
+                                    <i class="fa fa-circle-o"></i> 基础配置
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewBag.PageName == "GenerateCode" ? "active" : string.Empty)" href="/GenerateCode">
+                                    <i class="fa fa-circle-o"></i> 生成模板
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </nav>
+
+                <main role="main" class="col-sm-12 col-md-11 col-lg-11 bg-white">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+
+        <footer class="navbar navbar-dark bg-dark fixed-bottom justify-content-center">
+            <a href="#">
+                <strong>Copyright © 2017-@DateTime.Now.ToString("yyyy") 上海微茗智能科技有限公司.</strong> All rights reserved.
+            </a>
+
+        </footer>*@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

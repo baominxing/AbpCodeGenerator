@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="GeneratedCodes\**" />
+    <Compile Remove="publish\**" />
     <Content Remove="GeneratedCodes\**" />
+    <Content Remove="publish\**" />
     <EmbeddedResource Remove="GeneratedCodes\**" />
+    <EmbeddedResource Remove="publish\**" />
     <None Remove="GeneratedCodes\**" />
+    <None Remove="publish\**" />
   </ItemGroup>
 
 

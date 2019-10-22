@@ -167,9 +167,19 @@ ORDER BY A.id,
         /// 生成运行代码
         /// </summary>
         /// <param name="selectedDatabaseTableColumnList"></param>
-        public string GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList)
+        public string GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList, GenerateCodeInputDto input)
         {
-            var baseViewModel = new TemplateViewModel();
+            var baseViewModel = new TemplateViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName
+            };
+
             var targetBaseFolder = Path.Combine($"GeneratedCodes/{DateTime.Now.ToString("yyyyMMdd")}");
             var targetSubFolder = string.Empty;
             var targetFile = string.Empty;
