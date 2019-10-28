@@ -16,7 +16,7 @@
 
     <style>
         :root {
-            --browser_height: calc(50vw);
+            --browser_height: calc(100vh);
             --aside_width: 15%;
             --aside_logo_height: 50px;
             --aside_ui_li_a_color: #b8c7ce;
@@ -39,43 +39,101 @@
             color: snow;
         }
 
-            aside > div.logo {
-                width: var(--aside_width);
-                height: var(--aside_logo_height);
-                text-align: center;
-                font-size: x-large;
-                display: table-cell;
-                vertical-align: middle;
-                box-shadow: inset 0px 0px 5px 0px black;
+        .logo {
+            width: var(--aside_width);
+            height: var(--aside_logo_height);
+            text-align: center;
+            font-size: x-large;
+            display: table-cell;
+            vertical-align: middle;
+            box-shadow: inset 0px 0px 5px 0px black;
+        }
+
+            .logo > a {
+                text-decoration: none;
             }
 
-                aside > div.logo a {
+        aside > ul.menu {
+            height: calc(var(--browser_height) - var(--aside_logo_height));
+            list-style-type: none;
+            padding: 0px;
+            margin: 0px;
+            overflow: auto;
+        }
+
+            aside > ul.menu li {
+                padding: 10px;
+            }
+
+                aside > ul.menu li > .link {
+                    cursor: pointer;
+                    display: block;
+                    font-size: 14px;
+                    font-weight: 700;
+                    border-bottom: 1px solid #CCC;
+                    position: relative;
+                    -webkit-transition: all 0.4s ease;
+                    -o-transition: all 0.4s ease;
+                    transition: all 0.4s ease;
+                }
+
+                aside > ul.menu li i {
+                    position: absolute;
+                    top: 16px;
+                    left: 12px;
+                    font-size: 18px;
+                    color: #595959;
+                    -webkit-transition: all 0.4s ease;
+                    -o-transition: all 0.4s ease;
+                    transition: all 0.4s ease;
+                }
+
+                aside > ul.menu li > a {
+                    padding-right: 30px;
                     text-decoration: none;
+                    color: var(--aside_ui_li_a_color);
                 }
 
-            aside > ul.menu {
-                height: var(--browser_height);
-                list-style-type: none;
-                padding: 0px;
-                margin: 0px;
-                background-color: antiquewhite;
-                overflow: auto;
-            }
-
-                aside > ul.menu li {
-                    padding: 10px;
+                aside > ul.menu li > ul.submenu {
+                    list-style-type: none;
+                    padding: 0px;
+                    margin: 0px;
                 }
-
-                    aside > ul.menu li a {
-                        padding-right: 30px;
-                        text-decoration: none;
-                        color: var(--aside_ui_li_a_color);
-                    }
 
         body div.content {
             margin-left: var(--aside_width);
         }
     </style>
+
+    <script>
+
+                                                            //$(function () {
+                                                            //    var Accordion = function (el, multiple) {
+                                                            //        this.el = el || {};
+                                                            //        this.multiple = multiple || false;
+
+                                                            //        // Variables privadas
+                                                            //        var links = this.el.find('.link');
+                                                            //        // Evento
+                                                            //        links.on('click', { el: this.el, multiple: this.multiple }, this.dropdown)
+                                                            //    }
+
+                                                            //    Accordion.prototype.dropdown = function (e) {
+                                                            //        var $el = e.data.el;
+                                                            //        $this = $(this),
+                                                            //            $next = $this.next();
+
+                                                            //        $next.slideToggle();
+                                                            //        $this.parent().toggleClass('open');
+
+                                                            //        if (!e.data.multiple) {
+                                                            //            $el.find('.submenu').not($next).slideUp().parent().removeClass('open');
+                                                            //        };
+                                                            //    }
+
+                                                            //    var accordion = new Accordion($('.menu'), false);
+                                                            //});
+    </script>
 </head>
 <body>
 
@@ -83,198 +141,99 @@
     <aside>
         @*头部区域，可以用于显示网站的名称，logo等*@
         <div class="logo">
-            <i></i>
             <a href="javascript:;">ABPCodeGenerator</a>
         </div>
 
         @*菜单区域*@
 
         <ul class="menu">
+
             <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle-o"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
+                <div class="link"><i class="fa fa-paint-brush"></i>工艺卡片管理<i class="fa fa-chevron-down"></i></div>
+                <ul class="submenu">
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
+                <div class="link"><i class="fa fa-paint-brush"></i>工艺卡片管理<i class="fa fa-chevron-down"></i></div>
+                <ul class="submenu">
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle-o"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle-o"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle-o"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
-            </li>
-            <li>
-                <a href="javascript:;" class="auto">
-                    <i class="fa fa-circle"></i>
-                    <span style="padding:5px;">工艺卡片管理</span>
-                </a>
+                <div class="link"><i class="fa fa-paint-brush"></i>工艺卡片管理<i class="fa fa-chevron-down"></i></div>
+                <ul class="submenu">
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="auto">
+                            <i class="fa fa-circle-o"></i>
+                            <span style="padding:5px;">工艺卡片管理</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </aside>
@@ -286,7 +245,7 @@
         <h3>重置浏览器窗口大小，查看效果。</h3>
     </div>
 
-    @RenderBody()
+
 
     @*<header class="navbar navbar-dark bg-dark fixed-top bg-secondary flex-md-nowrap p-0">
             <span class="navbar-brand col-md-6 mr-0 text-left">ABPCodeGenerator</span>
