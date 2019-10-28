@@ -96,7 +96,7 @@
 for (int i = 0; i < Model.AllColumnList.Count; i++) 
                             {
 @Html.Raw("                        {"+Environment.NewLine)
-@Html.Raw($"                            data: \"{Model.AllColumnList[i].ColumnName.ToLower()}\","+Environment.NewLine)    
+@Html.Raw($"                            data: \"{Model.AllColumnList[i].ColumnName.ToLowerFirstLetter()}\","+Environment.NewLine)    
 @Html.Raw($"                            title: app.localize(\"{Model.AllColumnList[i].ColumnName}\")"+Environment.NewLine)               
 @Html.Raw("                        },"+Environment.NewLine)
                             }
