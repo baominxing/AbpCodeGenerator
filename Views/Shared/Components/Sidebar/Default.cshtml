@@ -1,0 +1,65 @@
+﻿@model List<ABPCodeGenerator.Controllers.Dtos.MenuItem>
+<ul class="first-ul">
+    <li class="first-li-header">
+        <a class="first-a-header" href="JavaScript:;">
+            <span style="font-size:20px;">
+                <i class="fa fa-android"></i>
+                <strong>CodeGenerator</strong>
+            </span>
+        </a>
+        <div class="logo">
+            CG
+        </div>
+    </li>
+
+    @{
+        foreach (var item in Model)
+        {
+            if (item.IsPage)
+            {
+                <li class="first-li-page @(ViewBag.PageName == item.PageCode?"active":string.Empty)">
+                    <a class="first-a" href="/">
+                        <i class="fa fa-desktop"></i> <span>@item.PageName</span><span class=""></span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="first-li @(item.SubMenuItemList.Any(s=>s.PageCode==ViewBag.PageName)?"active":string.Empty)">
+                    <a class="first-a" href="JavaScript:;">
+                        <i class="fa fa-desktop"></i> <span>@item.ModuleName</span><span class="fa arrow"></span>
+                    </a>
+                    <ul class="second-ul @(item.SubMenuItemList.Any(s=>s.PageCode==ViewBag.PageName)?"active":string.Empty)">
+                        @{
+                            foreach (var subItem in item.SubMenuItemList)
+                            {
+                                <li class="second-li">
+                                    <a class="@(ViewBag.PageName == subItem.PageCode?"active":string.Empty)" href="@subItem.PageUrl">@subItem.PageName</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </li>
+            }
+        }
+    }
+</ul>
+
+<script>
+    function accordion(multiple) {
+        $('.first-ul').find('.first-a').on('click', function () {
+            var $first_ul = $(this).parent().parent(),
+                $first_a = $(this),
+                $second_ul = $first_a.next();
+
+            $second_ul.slideToggle(100);
+            $first_a.parent().toggleClass('active');
+
+            if (!multiple) {
+                $first_ul.find('.second-ul').not($second_ul).slideUp(100).parent().removeClass('active');
+            };
+        });
+    }
+
+    accordion(false);
+</script>

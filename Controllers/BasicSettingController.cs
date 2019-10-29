@@ -17,7 +17,6 @@ namespace ABPCodeGenerator.Controllers
         {
         }
 
-
         public IActionResult Index()
         {
             return View();

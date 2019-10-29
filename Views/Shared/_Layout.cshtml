@@ -21,248 +21,26 @@
     <script src="~/lib/layer/layer.js"></script>
     <script src="~/lib/underscore.js/underscore-min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
-    <style>
-        :root {
-            --browser_height: calc(100vh);
-            --aside_width: 220px;
-            --aside-background-color: #222d32;
-            --aside_logo_height: 50px;
-            --aside_menu_li_height: 46px;
-            --aside_menu_li_a_color: #b8c7ce;
-            --aside_menu_li_a_color_hover: #fcfcfb;
-            --aside_font_size: small;
-        }
-
-        .datatable_l {
-            margin-top: 11px;
-            margin-left: 10px;
-        }
-
-        .error {
-            border-color: red
-        }
-
-        aside {
-            width: var(--aside_width);
-            height: var(--browser_height);
-            background-color: var(--aside-background-color);
-            position: fixed;
-        }
-
-        .first-ul {
-            list-style: none;
-            overflow: auto;
-        }
-
-        .first-li {
-        }
-
-        .first-ul > .active {
-            background-color: black;
-            border-left-style: solid;
-            border-left-color: aqua;
-        }
-
-        .first-li-header {
-            height: var(--aside_logo_height);
-        }
-
-        .first-a-header {
-            display: block;
-            text-decoration: none;
-            color: var(--aside_menu_li_a_color_hover);
-            text-align: center;
-            height: 100%;
-            padding: 10px;
-        }
-
-            .first-a-header:hover {
-                text-decoration: none;
-                color: var(--aside_menu_li_a_color_hover);
-                background-color: var(--aside-background-color);
-            }
-
-        .first-li-header > .logo {
-            display: none;
-        }
-
-        .first-li > .first-a {
-            display: block;
-            position: relative;
-            text-decoration: none;
-            color: var(--aside_menu_li_a_color);
-            font-size: 13px;
-            padding: 14px 20px 14px 25px
-        }
-
-            .first-li > .first-a:hover {
-                text-decoration: none;
-                color: var(--aside_menu_li_a_color_hover);
-                background-color: black;
-            }
-
-            .first-li > .first-a > .arrow {
-                float: right;
-                margin-top: 3px;
-            }
-
-                .first-li > .first-a > .arrow:before {
-                    content: "\f104";
-                }
-
-        .active > .first-a > .arrow:before {
-            content: "\f107";
-        }
-
-        .second-ul {
-            display: none;
-        }
-
-        .second-li {
-        }
-
-            .second-li > a {
-                display: block;
-                position: relative;
-                text-decoration: none;
-                color: var(--aside_menu_li_a_color);
-                font-size: 13px;
-                padding: 10px;
-                padding-left: 52px;
-            }
-
-                .second-li > a:hover {
-                    text-decoration: none;
-                    color: var(--aside_menu_li_a_color_hover);
-                    background-color: var(--aside-background-color);
-                    box-shadow: inset 0px 0px 1px 1px aqua;
-                }
-
-        .container-fluid {
-            margin-left: var(--aside_width);
-        }
-
-        .footer {
-            margin-left: var(--aside_width);
-        }
-
-            .footer > a {
-                text-decoration: none;
-                color: var(--aside_menu_li_a_color_hover);
-            }
-
-                .footer > a:hover {
-                    text-decoration: none;
-                    color: var(--aside_menu_li_a_color_hover);
-                }
-    </style>
 </head>
 <body>
     @*左侧菜单区域*@
     <aside>
-        <ul class="first-ul">
-            <li class="first-li-header">
-                <a class="first-a-header" href="JavaScript:;">
-                    <span style="font-size:20px;">
-                        <i class="fa fa-android"></i>
-                        <strong>CodeGenerator</strong>
-                    </span>
-                </a>
-                <div class="logo">
-                    CG
-                </div>
-            </li>
-            <li class="first-li">
-                <a class="first-a" href="JavaScript:;">
-                    <i class="fa fa-desktop"></i> <span>系统配置</span><span class="fa arrow"></span>
-                </a>
-                <ul class="second-ul">
-                    <li class="second-li">
-                        <a href="/Dashboard">工作台</a>
-                    </li>
-                    <li class="second-li">
-                        <a href="/BasicSetting">基础配置</a>
-                    </li>
-                    <li class="second-li">
-                        <a href="/GenerateCode">代码配置</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="first-li">
-                <a class="first-a" href="JavaScript:;">
-                    <i class="fa fa-desktop"></i> <span>系统配置</span><span class="fa arrow"></span>
-                </a>
-                <ul class="second-ul">
-                    <li class="second-li">
-                        <a href="/Dashboard">工作台</a>
-                    </li>
-                    <li class="second-li">
-                        <a href="/Dashboard">基础配置</a>
-                    </li>
-                    <li class="second-li">
-                        <a href="/Dashboard">代码配置</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="first-li">
-                <a class="first-a" href="JavaScript:;">
-                    <i class="fa fa-desktop"></i> <span>系统配置</span><span class="fa arrow"></span>
-                </a>
-                <ul class="second-ul">
-                    <li class="second-li">
-                        <a href="/Dashboard">工作台</a>
-                    </li>
-                    <li class="second-li">
-                        <a href="/Dashboard">基础配置</a>
-                    </li>
-                    <li class="second-li">
-                        <a href="/Dashboard">代码配置</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+        @await Component.InvokeAsync("Sidebar");
     </aside>
 
     @*右侧内容区域*@
-    <div class="container-fluid">
+    <div class="wrapper">
         @RenderBody()
     </div>
 
-
-    <footer class="footer navbar navbar-dark bg-dark fixed-bottom justify-content-center">
+    @*底部内容区域*@
+    <footer class="footer">
         <a href="#">
             <strong>Copyright © 2017-@DateTime.Now.ToString("yyyy") 上海微茗智能科技有限公司.</strong> All rights reserved.
         </a>
-
     </footer>
+
     <script>
-        var page = {
-
-            initialSidebar: function (multiple) {
-                $('.first-ul').find('.first-a').on('click', { el: this.el, multiple: multiple }, function (e) {
-                    var $el = e.data.el,
-                        $this = $(this),
-                        $next = $this.next();
-
-                    $next.slideToggle();
-                    $this.parent().toggleClass('active');
-
-                    if (!e.data.multiple) {
-                        $el.find('.second-ul').not($next).slideUp().parent().removeClass('active');
-                    };
-                });
-            },
-
-            init: function () {
-                page.initialSidebar(false);
-
-                alert("@ViewBag.PageName");
-            }
-        }
-
-        page.init();
-
     </script>
 
     @RenderSection("Scripts", required: false)
