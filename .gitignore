@@ -2,10 +2,7 @@
 # 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
 ################################################################################
 /.vs
-/.vs/ABPCodeGenerator/v16
-/bin/Debug/netcoreapp3.0
+/bin
 /obj
-/bin/Release/netcoreapp3.0
 /GeneratedCodes
-/bin/IISSupport
 /publish
