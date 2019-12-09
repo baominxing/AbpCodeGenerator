@@ -15,6 +15,8 @@ namespace ABPCodeGenerator.Controllers
 
         public IActionResult Index()
         {
+            _logger.LogInformation("ABPCodeGenerator.Controllers->DashboardController->Index");
+
             return View();
         }
     }
