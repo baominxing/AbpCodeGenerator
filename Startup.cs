@@ -1,12 +1,8 @@
-
-
 using ABPCodeGenerator.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
 
 namespace ABPCodeGenerator
 {
@@ -23,7 +19,7 @@ namespace ABPCodeGenerator
         {
             services.AddControllersWithViews();
 
-            services.AddTransient<ITemplateService, TemplateService>();
+            services.AddTransient<ICPS8xCodeGeneratorService, CPS8xCodeGeneratorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,4 +1,4 @@
-﻿using ABPCodeGenerator.Controllers.Dtos;
+﻿using ABPCodeGenerator.Controllers.CPS8x.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -24,14 +24,17 @@ namespace ABPCodeGenerator.ViewComponents
             {
                 new MenuItem()
                 {
-                    IsPage=true, ModuleName=string.Empty, PageCode="Dashboard",PageName="首页说明",PageUrl="/Dashboard"
-                },
-                new MenuItem()
-                {
-                    IsPage=false, ModuleName="ABP代码生成管理", PageName="",PageUrl="", SubMenuItemList=new List<MenuItem>()
+                    IsPage=false, ModuleName="CPS8.x代码生成管理", PageName="",PageUrl="", SubMenuItemList=new List<MenuItem>()
                     {
-                        new MenuItem { IsPage = true, ModuleName = "ABP代码生成管理", PageCode="BasicSetting",PageName = "基础配置", PageUrl = "/BasicSetting" },
-                        new MenuItem { IsPage = true, ModuleName = "ABP代码生成管理", PageCode="GenerateCode",PageName = "代码生成", PageUrl = "/GenerateCode" }
+                        new MenuItem(){
+                            IsPage = true, ModuleName = "CPS8.x代码生成管理", PageCode="Dashboard",PageName="首页说明",PageUrl="/Dashboard"
+                        },
+                        new MenuItem {
+                            IsPage = true, ModuleName = "CPS8.x代码生成管理", PageCode="BasicSetting",PageName = "基础配置", PageUrl = "/BasicSetting"
+                        },
+                        new MenuItem {
+                            IsPage = true, ModuleName = "CPS8.x代码生成管理", PageCode="GenerateCode",PageName = "代码生成", PageUrl = "/GenerateCode"
+                        }
                     }
                 },
             };

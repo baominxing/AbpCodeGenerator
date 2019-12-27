@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace ABPCodeGenerator.Controllers
+namespace ABPCodeGenerator.Controllers.CPS8x
 {
     public class DashboardController : BaseController
     {
@@ -17,7 +13,7 @@ namespace ABPCodeGenerator.Controllers
         {
             _logger.LogInformation("ABPCodeGenerator.Controllers->DashboardController->Index");
 
-            return View();
+            return View("~/Views/CPS8x/Dashboard/Index.cshtml");
         }
     }
 }

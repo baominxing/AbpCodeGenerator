@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Cors;
 using System.Data.SqlClient;
 using ABPCodeGenerator.Filters;
 
-namespace ABPCodeGenerator.Controllers
+namespace ABPCodeGenerator.Controllers.CPS8x
 {
     [EnableCors("AllowAll")]
     public class BasicSettingController : BaseController
@@ -19,7 +19,7 @@ namespace ABPCodeGenerator.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View("~/Views/CPS8x/BasicSetting/Index.cshtml");
         }
 
         public IActionResult Privacy()

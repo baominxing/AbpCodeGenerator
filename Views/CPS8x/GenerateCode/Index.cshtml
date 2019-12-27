@@ -18,7 +18,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary float-right ml-2" id="Generate">生成</button>
-            <button type="submit" class="btn btn-primary float-right" id="Search">查询</button>
+            <button type="submit" class="btn btn-primary float-right" id="Search" hidden>查询</button>
         </div>
     </div>
 
@@ -52,12 +52,19 @@
 
                         //填充数据到下拉组件
 
+                        var targetdbname = localStorageItem.TableName;
+
                         for (var i = 0; i < result.data.length; i++) {
-                            var option = "<option id=" + result.data[i].id + ">" + result.data[i].text + "</option>";
+
+                            var selected = targetdbname === result.data[i].text ? "selected" : "";
+
+                            var option = "<option id=" + result.data[i].id + " " + selected + ">" + result.data[i].text + "</option>";
 
                             page.$SelectDatabaseTableName.append(option);
+
                         }
 
+                        page.Search();
 
                     } else {
                         site.app.notify.error(result.errorMessage);
@@ -136,19 +143,58 @@
                                 {
                                     "title": "RowNumber",
                                     "data": null,
+                                    "width": "10px",
                                     "orderable": false,
                                     "render": function (data, type, row, meta) {
-                                        return meta.row + 1 +
-                                            meta.settings._iDisplayStart;
+                                        return meta.row + 1 + meta.settings._iDisplayStart;
                                     }
                                 },
                                 {
-                                    "defaultContent": "",
-                                    "title": '<input class="checkbox-all" type="checkbox"/>',
-                                    "width": "20px",
-                                    "className": "text-center",
+                                    "title": "是否主键",
+                                    "data": "PrimaryKey",
+                                    "render": function (data) {
+                                        return data === "√" ? "是" : "否";
+                                    }
+                                },
+                                {
+                                    "title": "列名",
+                                    "data": "ColumnName"
+                                },
+                                {
+                                    "title": '是否作为查询条件',
+                                    "data": "IsSearchFiled",
+                                    "render": function (data, type, row, meta) {
+                                        var checked = data === true ? "checked" : "";
+
+                                        return '<input class="checkbox-item align-middle text-center" type="checkbox" value="' + row.ColumnId + '" ' + checked + '/>';
+
+                                    }
+                                },
+                                {
+                                    "title": '是否审计字段',
+                                    "data": "IsAuditFiled",
+                                    "render": function (data, type, row, meta) {
+                                        var checked = data === true ? "checked" : "";
+
+                                        return '<input class="checkbox-item align-middle text-center" type="checkbox" value="' + row.ColumnId + '" ' + checked + '/>';
+
+                                    }
+                                },
+                                {
+                                    "title": '是否枚举类型',
+                                    "data": "IsEnumField",
+                                    "render": function (data, type, row, meta) {
+                                      var checked = data === true ? "checked" : "";
+
+                                        return '<input class="checkbox-item align-middle text-center" type="checkbox" value="' + row.ColumnId + '" ' + checked + '/>';
+
+                                    }
+                                },
+                                {
+                                    "title": '枚举字段名称',
+                                    "data": "EnumFieldName",
                                     "createdCell": function (td, cellData, rowData, row, col) {
-                                        var $control = $('<input class="checkbox-item align-middle text-center" type="checkbox" value="' + row.ColumnId + '"/>');
+                                        var $control = $('<input class="checkbox-item align-middle text-center" type="text" value="' + rowData.ColumnId + '"/>');
                                         $control.appendTo($(td)).click(function () {
                                             page.SelectItem($control, rowData);
                                         });
@@ -156,48 +202,26 @@
                                     }
                                 },
                                 {
-                                    "title": "TableName",
-                                    "data": "TableName"
+                                    "title": '中文多语言',
+                                    "data": "MultiLanguage_CN",
+                                    "createdCell": function (td, cellData, rowData, row, col) {
+                                        var $control = $('<input class="checkbox-item align-middle text-center" type="text" value="' + rowData.ColumnId + '"/>');
+                                        $control.appendTo($(td)).click(function () {
+                                            page.SelectItem($control, rowData);
+                                        });
+
+                                    }
                                 },
                                 {
-                                    "title": "PrimaryKey",
-                                    "data": "PrimaryKey"
-                                },
-                                {
-                                    "title": "ColumnName",
-                                    "data": "ColumnName"
-                                },
-                                {
-                                    "title": "DataType",
-                                    "data": "DataType"
-                                },
-                                {
-                                    "title": "Length",
-                                    "data": "Length"
-                                },
-                                {
-                                    "title": "Precision",
-                                    "data": "Precision"
-                                },
-                                {
-                                    "title": "Scale",
-                                    "data": "Scale"
-                                },
-                                {
-                                    "title": "AllowNull",
-                                    "data": "AllowNull"
-                                },
-                                {
-                                    "title": "Default",
-                                    "data": "Default"
-                                },
-                                {
-                                    "title": "IsIdentity",
-                                    "data": "IsIdentity"
-                                },
-                                {
-                                    "title": "Desc",
-                                    "data": "Desc"
+                                    "title": '英文多语言',
+                                    "data": "MultiLanguage_US",
+                                    "createdCell": function (td, cellData, rowData, row, col) {
+                                        var $control = $('<input class="checkbox-item align-middle text-center" type="text" value="' + rowData.ColumnName + '"/>');
+                                        $control.appendTo($(td)).click(function () {
+                                            page.SelectItem($control, rowData);
+                                        });
+
+                                    }
                                 }
                             ]
                         }).on('draw.dt', function (e, settings) {
@@ -294,6 +318,11 @@
                 $(document).on("click", ".checkbox-all", function () {
                     page.SelectAll();
                 });
+
+                page.$SelectDatabaseTableName.on("click", function () {
+                    page.Search();
+                })
+
             }
         };
 

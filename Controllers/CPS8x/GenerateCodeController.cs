@@ -11,14 +11,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace ABPCodeGenerator.Controllers
+namespace ABPCodeGenerator.Controllers.CPS8x
 {
     public class GenerateCodeController : BaseController
     {
-        private readonly ITemplateService templateService;
+        private readonly ICPS8xCodeGeneratorService templateService;
         private readonly IWebHostEnvironment webHostEnvironment;
         public GenerateCodeController(
-            ITemplateService templateService,
+            ICPS8xCodeGeneratorService templateService,
             IWebHostEnvironment webHostEnvironment,
             ILogger<BaseController> logger) : base(logger)
         {
@@ -28,7 +28,7 @@ namespace ABPCodeGenerator.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View("~/Views/CPS8x/GenerateCode/Index.cshtml");
         }
 
         [HttpPost]

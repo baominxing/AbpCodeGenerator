@@ -1,8 +1,11 @@
 ﻿@model ABPCodeGenerator.Models.EntityDtoViewModel
+using Abp.AutoMapper;
 using System;
+using @(Model.EntityNamespace);
 
-namespace @(Model.ProjectName).@(Model.EntityName).Dto
+namespace @(Model.ProjectName).@(Model.ModuleName).Dtos
 {
+    [AutoMap(typeof(@(Model.EntityName)))]
     public class @(Model.EntityName)Dto
     {
     @{

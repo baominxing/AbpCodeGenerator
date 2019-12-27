@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ABPCodeGenerator.Controllers.Dtos
+namespace ABPCodeGenerator.Controllers.CPS8x.Dtos
 {
     public class MenuItem
     {

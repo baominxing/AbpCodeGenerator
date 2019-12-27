@@ -13,6 +13,8 @@ namespace ABPCodeGenerator.Models
 
         public string EntityName = "TestEntity";
 
+        public string EntityNamespace = "WIMI.BTL.TestEntity";
+
         public string EntityPrimaryKeyType = "int";
 
         public string TableName = "TestEntities";
@@ -24,6 +26,11 @@ namespace ABPCodeGenerator.Models
         public List<ColumnInfo> SearchColumnList = new List<ColumnInfo>();
 
         public List<ColumnInfo> TableColumnList = new List<ColumnInfo>();
+    }
+
+    public class ReadmeViewModel : TemplateViewModel
+    {
+
     }
 
     public class EntityDtoViewModel : TemplateViewModel
@@ -46,27 +53,7 @@ namespace ABPCodeGenerator.Models
 
     }
 
-    public class PermissionNamesViewModel : TemplateViewModel
-    {
-
-    }
-
-    public class AuthorizationProviderViewModel : TemplateViewModel
-    {
-
-    }
-
     public class ControllerViewModel : TemplateViewModel
-    {
-
-    }
-
-    public class NavigationProviderViewModel : TemplateViewModel
-    {
-
-    }
-
-    public class PageNamesViewModel : TemplateViewModel
     {
 
     }

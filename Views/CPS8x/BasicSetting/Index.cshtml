@@ -13,12 +13,13 @@
         <form class="card-body" id="form">
             <div class="form-group row">
                 <label class="col-sm-12 col-md-2 col-form-label" for="ConnectionString">数据库连接字符串</label>
-                <input type="text" class="col-sm-12 col-md-10 form-control" rows="3" id="ConnectionString" name="ConnectionString" aria-describedby="ConnectionString" required>
+                <input type="text" class="col-sm-12 col-md-10 form-control" rows="3" id="ConnectionString" name="ConnectionString" aria-describedby="ConnectionString" required
+                       placeholder="Data Source=ServerName;Initial Catalog=DatabaseName;user id=sa;password=P@ssw0rd;MultipleActiveResultSets=True;Connect Timeout=120;persist security info=True;">
             </div>
 
-            <div class="form-group row">
+            <div class="form-group row" hidden>
                 <label class="col-sm-12 col-md-2 col-form-label" for="ProjectName">项目名称</label>
-                <input type="text" class="col-sm-12 col-md-10 form-control" id="ProjectName" name="ProjectName" aria-describedby="ProjectName" required>
+                <input type="text" class="col-sm-12 col-md-10 form-control" id="ProjectName" name="ProjectName" aria-describedby="ProjectName" value="WIMI.BTL" disabled>
             </div>
 
             <div class="form-group row">
@@ -26,7 +27,7 @@
                 <input type="text" class="col-sm-12 col-md-10 form-control" id="ModuleName" name="ModuleName" aria-describedby="ModuleName" required>
             </div>
 
-            <div class="form-group row">
+            <div class="form-group row" hidden>
                 <label class="col-sm-12 col-md-2 col-form-label" for="PageName">页面名称</label>
                 <input type="text" class="col-sm-12 col-md-10 form-control" id="PageName" name="PageName" aria-describedby="PageName" required>
             </div>
@@ -58,7 +59,8 @@
 
             <div class="form-group row">
                 <label class="col-sm-12 col-md-2 col-form-label" for="EntitySortingColumnName">排序字段名称</label>
-                <input type="text" class="col-sm-12 col-md-10 form-control" id="EntitySortingColumnName" name="EntitySortingColumnName" aria-describedby="EntitySortingColumnName" required>
+                <input type="text" class="col-sm-12 col-md-10 form-control" id="EntitySortingColumnName" name="EntitySortingColumnName" aria-describedby="EntitySortingColumnName" required
+                       placeholder="例如: Id,Name">
             </div>
 
             <button type="submit" class="btn btn-primary float-right" id="Save">保存</button>

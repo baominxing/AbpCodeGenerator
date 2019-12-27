@@ -9,17 +9,40 @@ namespace ABPCodeGenerator.Core.Entities
         private static readonly string Nullable = "Y";
 
         public string TableName { get; set; }
+
         public string PrimaryKey { get; set; }
+
         public string ColumnId { get; set; }
+
         public string ColumnName { get; set; }
+
         public string DataType { get; set; }
+
         public string Length { get; set; }
+
         public string Precision { get; set; }
+
         public string Scale { get; set; }
+
         public string AllowNull { get; set; }
+
         public string Default { get; set; }
+
         public string IsIdentity { get; set; }
+
         public string Desc { get; set; }
+
+        public bool IsSearchFiled { get; set; } = true;
+
+        public bool IsAuditFiled { get; set; }
+
+        public bool IsEnumField { get; set; }
+
+        public string EnumFieldName { get; set; }
+
+        public string MultiLanguage_CN { get; set; }
+
+        public string MultiLanguage_US { get; set; }
 
         public string GetCSharpDataType()
         {

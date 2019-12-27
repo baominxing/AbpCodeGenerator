@@ -1,14 +1,10 @@
-﻿using ABPCodeGenerator.Controllers;
+﻿using ABPCodeGenerator.Controllers.CPS8x;
 using ABPCodeGenerator.Core.Entities;
-using ABPCodeGenerator.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ABPCodeGenerator.Services
 {
-    public interface ITemplateService : IService
+    public interface ICPS8xCodeGeneratorService : IService
     {
         List<dynamic> ListDatabaseTableName(ListDatabaseTableNameInputDto input);
 

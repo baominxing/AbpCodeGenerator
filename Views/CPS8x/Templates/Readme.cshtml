@@ -1,0 +1,66 @@
+﻿@model ABPCodeGenerator.Models.ReadmeViewModel
+@{
+    Layout = null;
+}
+<!-- #region PermissionNames -->
+public const string Pages_@(Model.ModuleName) = "Pages.@(Model.ModuleName)";
+
+//如果是生成的是页面，则拷贝下面两行即可，如果是一个新的模块的页面，则拷贝整个region内的代码
+public const string Pages_@(Model.ModuleName)_@(Model.PageName) = "Pages.@(Model.ModuleName).@(Model.PageName)";
+public const string Pages_@(Model.ModuleName)_@(Model.PageName)_Manage = "Pages.@(Model.ModuleName).@(Model.PageName).Manage";
+
+<!-- #endregion -->
+
+<!-- #region Authorization -->
+var pages = context.GetPermissionOrNull(PermissionNames.Pages) ?? context.CreatePermission(PermissionNames.Pages, L("Pages"));
+
+var @(Model.ModuleName) = pages.CreateChildPermission(PermissionNames.Pages_@(Model.ModuleName), L("@(Model.ModuleName)"));
+            
+//如果是生成的是页面，则拷贝下面两行即可，如果是一个新的模块的页面，则拷贝整个region内的代码
+var  @(Model.ModuleName)_@(Model.PageName) = @(Model.ModuleName).CreateChildPermission(PermissionNames.Pages_@(Model.ModuleName)_@(Model.PageName), L("@(Model.PageName)"));
+@(Model.ModuleName)_@(Model.PageName).CreateChildPermission(PermissionNames.Pages_@(Model.ModuleName)_@(Model.PageName)_Manage, L("@(Model.PageName)Manage"));
+
+<!-- #endregion -->
+
+<!-- #region PageNames -->
+public const string @(Model.ModuleName) = "@(Model.ModuleName)";
+
+//如果是在已有模块下新增页面，只需要拷贝下面一行代码，如果需要新增一个模块，则拷贝整个region代码块
+public const string @(Model.ModuleName)_@(Model.PageName) = "@(Model.ModuleName).@(Model.PageName)";
+
+<!-- #endregion -->
+
+<!-- #region Navigation -->
+menu.AddItem(
+    new MenuItemDefinition(
+        PageNames.App.Page.@(Model.ModuleName),
+        L("@(Model.ModuleName)"),
+        url: "@(Model.ModuleName)",
+        icon: "fa fa-circle",
+        requiredPermissionName: PermissionNames.Pages_@(Model.ModuleName))
+        //如果是在已有模块下新增页面，则拷贝下面代码即可，如果是同时新增一个模块，则拷贝整个region代码块
+        //======================================================================================
+        .AddItem(
+            new MenuItemDefinition(
+                PageNames.App.Page.@(Model.ModuleName)_@(Model.PageName),
+                L("@(Model.PageName)"),
+                url: "@(Model.PageName)",
+                icon: "fa fa-circle-o",
+                requiredPermissionName: PermissionNames.Pages_@(Model.ModuleName)_@(Model.PageName)))
+        //======================================================================================  
+                );
+<!-- #endregion -->
+
+<!-- #region MultipleLanguage -->
+<!--@Html.Raw($"{Model.PageName}")-->
+@{
+@Html.Raw($"<text name=\"{Model.PageName}\" value=\"{Model.PageName}\" />" + Environment.NewLine);
+
+@Html.Raw($"<text name=\"{Model.PageName}Manage\" value=\"{Model.PageName}Manage\" />" + Environment.NewLine);
+
+foreach (var column in Model.AllColumnList)
+{  
+@Html.Raw($"<text name=\"{column.ColumnName}\" value=\"{column.ColumnName}\" />" + Environment.NewLine);
+}
+}
+<!-- #endregion -->

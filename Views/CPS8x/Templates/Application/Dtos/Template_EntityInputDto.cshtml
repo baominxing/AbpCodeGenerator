@@ -2,12 +2,15 @@
 @{
     Layout = null;
 }
+using Abp.AutoMapper;
 using Abp.Runtime.Validation;
 using System;
 using @(Model.ProjectName).Dto;
+using @(Model.EntityNamespace);
 
-namespace @(Model.ProjectName).@(Model.EntityName).Dto
+namespace @(Model.ProjectName).@(Model.ModuleName).Dtos
 {
+     [AutoMap(typeof(@(Model.EntityName)))]
      public class @(Model.EntityName)InputDto : PagedSortedAndFilteredInputDto, IShouldNormalize
     {
 @{
