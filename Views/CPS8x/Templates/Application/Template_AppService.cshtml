@@ -20,12 +20,11 @@ namespace @(Model.ProjectName).@(Model.ModuleName)
         private readonly IRepository<@(Model.EntityName), @(Model.EntityPrimaryKeyType)> @(Model.EntityName.ToLower())Repository;
 
         public @(Model.EntityName)AppService(
-        IRepository<@(Model.EntityName), @(Model.EntityPrimaryKeyType)>
-            @(Model.EntityName.ToLower())Repository
+        IRepository<@(Model.EntityName), @(Model.EntityPrimaryKeyType)> @(Model.EntityName.ToLower())Repository
             )
-            {
+        {
             this.@(Model.EntityName.ToLower())Repository = @(Model.EntityName.ToLower())Repository;
-            }
+        }
 
         public async Task<DatatablesPagedResultOutput<@(Model.EntityName)Dto>> List@(Model.EntityName)(@(Model.EntityName)InputDto input)
         {
@@ -33,12 +32,32 @@ namespace @(Model.ProjectName).@(Model.ModuleName)
                         select new @(Model.EntityName)Dto
                         {
                         @{
-                            foreach (var column in Model.AllColumnList)
+                            foreach (var column in Model.ColumnConfigList)
                             {
 @Html.Raw($"                            {column.ColumnName} = {Model.EntityName.ToLower()}.{column.ColumnName}," + Environment.NewLine);
                             }
                         }
                         };
+            
+             
+@{ 
+            if(Model.ColumnConfigList.Where(s=>s.IsSearchFiled).Any())
+            {           
+@Html.Raw($"            query = query" + Environment.NewLine);
+                foreach (var item in Model.ColumnConfigList.Where(s=>s.IsSearchFiled))
+                {
+                    if (item.IsStringType())
+                    {
+@Html.Raw($"                    .WhereIf(!string.IsNullOrEmpty(input.{item.ColumnName}), q => q.{item.ColumnName}.Contains(input.{item.ColumnName}))" + Environment.NewLine);
+                    }
+                    else if (item.IsNumberType()&&!item.IsEnumField)
+                    {
+@Html.Raw($"                    .WhereIf(input.{item.ColumnName} != 0, q => q.{item.ColumnName} == input.{item.ColumnName})" + Environment.NewLine);
+                    }
+                }
+@Html.Raw($"                    ;" + Environment.NewLine);
+             }
+}                   
 
             var entitiyList = await query.OrderBy(input.Sorting).AsNoTracking().PageBy(input).ToListAsync();
             var entitiyListCount = await query.CountAsync();
@@ -54,14 +73,7 @@ namespace @(Model.ProjectName).@(Model.ModuleName)
 
         public async Task Create@(Model.EntityName)(@(Model.EntityName)InputDto input)
         {
-            var entity = new @(Model.EntityName)();
-
-            @{
-            foreach (var column in Model.AllColumnList)
-            {
-                @Html.Raw($"            entity.{column.ColumnName} = input.{column.ColumnName};" + Environment.NewLine);
-            }
-            }
+            var entity = input.MapTo<@(Model.EntityName)>();
 
             await this.@(Model.EntityName.ToLower())Repository.InsertAsync(entity);
         }
@@ -71,7 +83,7 @@ namespace @(Model.ProjectName).@(Model.ModuleName)
             var entity = this.@(Model.EntityName.ToLower())Repository.FirstOrDefault(s => s.Id == input.Id);
 
             @{
-            foreach (var column in Model.AllColumnList)
+            foreach (var column in Model.ColumnConfigList.Where(s=>!s.IsAuditFiled))
             {
                 @Html.Raw($"            entity.{column.ColumnName} = input.{column.ColumnName};" + Environment.NewLine);
             }
@@ -94,7 +106,7 @@ namespace @(Model.ProjectName).@(Model.ModuleName)
                         select new @(Model.EntityName)Dto
                         {
     @{
-                            foreach (var column in Model.AllColumnList)
+                            foreach (var column in Model.ColumnConfigList)
                             {
                                 @Html.Raw($"                            {column.ColumnName} = {Model.EntityName.ToLower()}.{column.ColumnName}," + Environment.NewLine);
                             }

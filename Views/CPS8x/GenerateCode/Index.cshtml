@@ -2,6 +2,11 @@
     ViewData["Title"] = "ABPCodeGenerator";
     ViewBag.PageName = "GenerateCode";
 }
+<style>
+    th, td {
+        white-space: nowrap;
+    }
+</style>
 
 <div class="container-fluid">
 
@@ -35,6 +40,7 @@
     <script>
         var baseUrl = site.app.setting.service.baseUrl;
         var page, localStorageItem = null;
+        var selectionArray = [{ value: "true", text: "是" }, { value: "false", text: "否" }];
 
         page = {
             $SelectDatabaseTableName: $("#SelectDatabaseTableName"),
@@ -43,7 +49,6 @@
             $Generate: $("#Generate"),
             $Table: $("#Table"),
             DataTable: null,
-            SelectedArray: [],//存放当前表格中选择的项的ColumnId集合
 
             ListDatabaseTableName: function () {
 
@@ -92,11 +97,11 @@
 
                         //将数据填充给到表中
                         if (page.DataTable) {
-                            page.DataTable.fnDestroy();
+                            page.DataTable.destroy();
                             page.$Table.empty();
                         }
 
-                        page.DataTable = page.$Table.dataTable({
+                        page.DataTable = page.$Table.DataTable({
                             "scrollCollapse": true,
                             "scrollX": true,
                             "searching": false,
@@ -139,6 +144,7 @@
                             },
                             //"dom": "<'row'<'col-md-12 align-items-center't><'col-md-2 align-items-center'i><'col-md-2 align-items-center'l><'col-md-8 align-items-center'p>>",
                             "dom": '<"top">rt<"row"<"col-md-12"<"float-left"i><"float-right"p><"float-left datatable_l"l>>>',
+                            "aLengthMenu": [100, 1000],
                             "columns": [
                                 {
                                     "title": "RowNumber",
@@ -161,72 +167,74 @@
                                     "data": "ColumnName"
                                 },
                                 {
-                                    "title": '是否作为查询条件',
+                                    "title": '是否查询条件(下拉选择)',
                                     "data": "IsSearchFiled",
                                     "render": function (data, type, row, meta) {
-                                        var checked = data === true ? "checked" : "";
-
-                                        return '<input class="checkbox-item align-middle text-center" type="checkbox" value="' + row.ColumnId + '" ' + checked + '/>';
-
+                                        return data === "true" ? "是" : "否";
                                     }
                                 },
                                 {
-                                    "title": '是否审计字段',
-                                    "data": "IsAuditFiled",
-                                    "render": function (data, type, row, meta) {
-                                        var checked = data === true ? "checked" : "";
-
-                                        return '<input class="checkbox-item align-middle text-center" type="checkbox" value="' + row.ColumnId + '" ' + checked + '/>';
-
-                                    }
-                                },
-                                {
-                                    "title": '是否枚举类型',
+                                    "title": '是否枚举类型(下拉选择)',
                                     "data": "IsEnumField",
                                     "render": function (data, type, row, meta) {
-                                      var checked = data === true ? "checked" : "";
-
-                                        return '<input class="checkbox-item align-middle text-center" type="checkbox" value="' + row.ColumnId + '" ' + checked + '/>';
-
+                                        return data === "true" ? "是" : "否";
                                     }
                                 },
                                 {
-                                    "title": '枚举字段名称',
-                                    "data": "EnumFieldName",
-                                    "createdCell": function (td, cellData, rowData, row, col) {
-                                        var $control = $('<input class="checkbox-item align-middle text-center" type="text" value="' + rowData.ColumnId + '"/>');
-                                        $control.appendTo($(td)).click(function () {
-                                            page.SelectItem($control, rowData);
-                                        });
-
-                                    }
+                                    "title": '枚举字段名称(点击填写)',
+                                    "data": "EnumFieldName"
                                 },
                                 {
-                                    "title": '中文多语言',
-                                    "data": "MultiLanguage_CN",
-                                    "createdCell": function (td, cellData, rowData, row, col) {
-                                        var $control = $('<input class="checkbox-item align-middle text-center" type="text" value="' + rowData.ColumnId + '"/>');
-                                        $control.appendTo($(td)).click(function () {
-                                            page.SelectItem($control, rowData);
-                                        });
-
-                                    }
+                                    "title": '中文多语言(点击填写)',
+                                    "data": "MultiLanguage_CN"
                                 },
                                 {
-                                    "title": '英文多语言',
-                                    "data": "MultiLanguage_US",
-                                    "createdCell": function (td, cellData, rowData, row, col) {
-                                        var $control = $('<input class="checkbox-item align-middle text-center" type="text" value="' + rowData.ColumnName + '"/>');
-                                        $control.appendTo($(td)).click(function () {
-                                            page.SelectItem($control, rowData);
-                                        });
-
-                                    }
+                                    "title": '英文多语言(点击填写)',
+                                    "data": "MultiLanguage_US"
                                 }
-                            ]
-                        }).on('draw.dt', function (e, settings) {
-                            //页行改变或选择其他页的时候，保持选择
-                            page.SelectAll();
+                            ],
+                            "columnDefs": [{
+                                "targets": [5, 6, 7],
+                                createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+
+                                    $(cell).click(function () {
+                                        $(this).html('<input type="text" size="16" style="width: 100%"/>');
+                                        var aInput = $(this).find(":input");
+                                        aInput.focus().val(cellData);
+                                    });
+
+                                    $(cell).on("blur", ":input", function () {
+                                        var text = $(this).val();
+                                        $(cell).html(text);
+                                        page.DataTable.cell(cell).data(text)
+                                    })
+                                }
+                            },
+                            {
+                                "targets": [3, 4],
+                                createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+
+                                    $(cell).click(function () {
+                                        $(this).html(page.BuildSelection(selectionArray));
+                                        var aInput = $(this).find(":input");
+                                        aInput.focus().val("");
+                                    });
+
+                                    $(cell).on("click", ":input", function (e) {
+                                        e.stopPropagation();
+                                    });
+
+                                    $(cell).on("change", ":input", function () {
+                                        $(this).blur();
+                                    });
+
+                                    $(cell).on("blur", ":input", function () {
+                                        var value = $(this).find("option:selected").val();
+                                        var text = $(this).find("option:selected").text();
+                                        page.DataTable.cell(cell).data(value)
+                                    });
+                                }
+                            }],
                         });
 
                     } else {
@@ -238,14 +246,13 @@
 
             Generate: function () {
 
-                if (page.SelectedArray.length === 0) {
-                    site.app.notify.error("最少选择一个字段");
+                var tabledatas = [];
+                var data = page.$Table.dataTable().fnGetData()
+                _.each(data, function (item) {
+                    tabledatas.push(item);
+                });
 
-                    return;
-                }
-
-                var databaseTableName = $("#SelectDatabaseTableName option:selected").val();
-                localStorageItem.columnIdList = _.pluck(page.SelectedArray, "ColumnId");
+                localStorageItem.columnConfigList = tabledatas;
 
                 $.post(baseUrl + "/GenerateCode", { input: localStorageItem }, function (result) {
                     if (result.errorCode === site.app.setting.service.noneErrorCode) {
@@ -256,34 +263,6 @@
                         site.app.notify.error(result.errorMessage);
                     }
                 })
-            },
-
-            SelectAll: function () {
-
-                var $self = $(".checkbox-all");
-                page.SelectedArray = [];
-
-                if ($self.prop("checked")) {
-                    var data = page.DataTable.fnGetData();
-                    _.each(data, function (item) {
-                        page.SelectedArray.push(item);
-                    });
-                }
-
-                //界面上体现全选/全不选
-                $self.closest(".dataTables_wrapper").find(".checkbox-item").prop("checked", $self.prop("checked"));
-            },
-
-            SelectItem: function ($this, item) {
-
-                if ($this.prop("checked")) {
-                    if (!_.contains(page.SelectedArray, item)) {
-                        page.SelectedArray.push(item);
-                    }
-                } else {
-                    page.SelectedArray = _.reject(page.SelectedArray, function (one) { return one.value === item.ColumnId; });
-                }
-
             },
 
             LoadLocalStorageItem: function () {
@@ -302,6 +281,17 @@
                 window.location.href = baseUrl + "/DownloadGeneratedZipFile?relativeFilePath=" + relativeFilePath;
             },
 
+
+            BuildSelection: function (data) {
+                var _html = '<select style="width:100%;">';
+                data.forEach(function (ele, index) {
+                    _html += '<option value=' + ele.value + '>' + ele.text + '</option>';
+                });
+                _html += '</select>';
+
+                return _html;
+            },
+
             Init: function () {
                 page.LoadLocalStorageItem();
 
@@ -314,10 +304,6 @@
                 });
 
                 page.ListDatabaseTableName();
-
-                $(document).on("click", ".checkbox-all", function () {
-                    page.SelectAll();
-                });
 
                 page.$SelectDatabaseTableName.on("click", function () {
                     page.Search();

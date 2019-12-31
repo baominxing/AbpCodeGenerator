@@ -58,7 +58,7 @@ namespace ABPCodeGenerator.Controllers.CPS8x
         {
             var errorMessage = string.Empty;
             var errorCode = AppConfig.ErrorCodes.NONE;
-            var resultList = new List<ColumnInfo>();
+            var resultList = new List<ColumnConfigInfo>();
 
             try
             {
@@ -82,13 +82,17 @@ namespace ABPCodeGenerator.Controllers.CPS8x
             var zipFilePath = string.Empty;
             try
             {
-                //取出所选表所有的列
-                var originalDatabaseTableColumnList = this.templateService.ListDatabaseTableColumn(new ListDatabaseTableColumnInputDto() { ConnectionString = input.ConnectionString, TableName = input.TableName });
-                //取出页面上选择的列
-                var selectedDatabaseTableColumnList = originalDatabaseTableColumnList.Where(s => input.ColumnIdList.Contains(s.ColumnId)).ToList();
-                //取出页面上选择的列
-                zipFilePath = this.templateService.GenerateCode(selectedDatabaseTableColumnList, input);
+                //标识审计属性
+                foreach (var column in input.ColumnConfigList)
+                {
+                    if (AppConfig.CPS8x.AuditedFieldList.Contains(column.ColumnName))
+                    {
+                        column.IsAuditFiled = true;
+                    }
+                }
 
+                //取出页面上选择的列
+                zipFilePath = this.templateService.GenerateCode(input);
             }
             catch (Exception ex)
             {
@@ -141,12 +145,6 @@ namespace ABPCodeGenerator.Controllers.CPS8x
 
         public string EntitySortingColumnName { get; set; }
 
-        public List<string> ColumnIdList { get; set; } = new List<string>();
-
-        public List<ColumnInfo> AllColumnList { get; set; } = new List<ColumnInfo>();
-
-        public List<ColumnInfo> SearchColumnList { get; set; } = new List<ColumnInfo>();
-
-        public List<ColumnInfo> TableColumnList { get; set; } = new List<ColumnInfo>();
+        public List<ColumnConfigInfo> ColumnConfigList { get; set; } = new List<ColumnConfigInfo>();
     }
 }

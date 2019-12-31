@@ -3,7 +3,10 @@ using System;
 
 namespace ABPCodeGenerator.Core.Entities
 {
-    public class ColumnInfo
+    /// <summary>
+    /// 列字段配置表
+    /// </summary>
+    public class ColumnConfigInfo
     {
         private static readonly string String = "STRING";
         private static readonly string Nullable = "Y";
@@ -32,7 +35,7 @@ namespace ABPCodeGenerator.Core.Entities
 
         public string Desc { get; set; }
 
-        public bool IsSearchFiled { get; set; } = true;
+        public bool IsSearchFiled { get; set; }
 
         public bool IsAuditFiled { get; set; }
 
@@ -51,7 +54,7 @@ namespace ABPCodeGenerator.Core.Entities
 
         public bool IsNullable()
         {
-            return this.AllowNull.ToLower() == Nullable.ToLower() && TypeHelper.SqlServerType2CSharpType(this.DataType).ToLower() != String.ToLower();
+            return AllowNull.ToLower() == Nullable.ToLower() && TypeHelper.SqlServerType2CSharpType(DataType).ToLower() != String.ToLower();
         }
 
         public dynamic GetColumnTypeDefaultValue()
@@ -80,6 +83,35 @@ namespace ABPCodeGenerator.Core.Entities
                     return "Guid.NewGuid()";
                 default:
                     return "string.Empty";
+            }
+        }
+
+        public bool IsDateTimeType() => TypeHelper.SqlServerType2CSharpType(this.DataType).ToLower() == "DateTime".ToLower();
+
+        public bool IsStringType() => TypeHelper.SqlServerType2CSharpType(this.DataType).ToLower() == "String".ToLower();
+
+        public bool IsNumberType()
+        {
+            var type = TypeHelper.SqlServerType2CSharpType(this.DataType);
+
+            switch (type)
+            {
+                case "byte":
+                case "short":
+                case "int":
+                case "long":
+                case "decimal":
+                case "float":
+                case "double":
+                case "Single":
+                case "Int16":
+                    return true;
+                case "string":
+                case "DateTime":
+                case "bool":
+                case "Guid":
+                default:
+                    return false;
             }
         }
     }

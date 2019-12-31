@@ -58,9 +58,11 @@ menu.AddItem(
 
 @Html.Raw($"<text name=\"{Model.PageName}Manage\" value=\"{Model.PageName}Manage\" />" + Environment.NewLine);
 
-foreach (var column in Model.AllColumnList)
+@Html.Raw($"<text name=\"WhetherToDelete{Model.EntityName}\" value=\"WhetherToDelete{Model.EntityName}\" />" + Environment.NewLine);
+
+foreach (var column in Model.ColumnConfigList.Where(s=>!s.IsAuditFiled))
 {  
-@Html.Raw($"<text name=\"{column.ColumnName}\" value=\"{column.ColumnName}\" />" + Environment.NewLine);
+@Html.Raw($"<text name=\"{column.ColumnName}\" value=\"{column.MultiLanguage_CN}\" />" + Environment.NewLine);
 }
 }
 <!-- #endregion -->

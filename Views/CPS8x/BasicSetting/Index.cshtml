@@ -17,9 +17,9 @@
                        placeholder="Data Source=ServerName;Initial Catalog=DatabaseName;user id=sa;password=P@ssw0rd;MultipleActiveResultSets=True;Connect Timeout=120;persist security info=True;">
             </div>
 
-            <div class="form-group row" hidden>
+            <div class="form-group row">
                 <label class="col-sm-12 col-md-2 col-form-label" for="ProjectName">项目名称</label>
-                <input type="text" class="col-sm-12 col-md-10 form-control" id="ProjectName" name="ProjectName" aria-describedby="ProjectName" value="WIMI.BTL" disabled>
+                <input type="text" class="col-sm-12 col-md-10 form-control" id="ProjectName" name="ProjectName" aria-describedby="ProjectName" value="WIMI.BTL" placeholder="WIMI.BTL" required>
             </div>
 
             <div class="form-group row">
@@ -27,7 +27,7 @@
                 <input type="text" class="col-sm-12 col-md-10 form-control" id="ModuleName" name="ModuleName" aria-describedby="ModuleName" required>
             </div>
 
-            <div class="form-group row" hidden>
+            <div class="form-group row">
                 <label class="col-sm-12 col-md-2 col-form-label" for="PageName">页面名称</label>
                 <input type="text" class="col-sm-12 col-md-10 form-control" id="PageName" name="PageName" aria-describedby="PageName" required>
             </div>
@@ -82,6 +82,9 @@
             Save: function () {
 
                 if (!page.$form.valid()) {
+
+                    site.app.notify.error("输入不能有空值！");
+
                     return;
                 }
 

@@ -57,9 +57,9 @@ namespace ABPCodeGenerator.Services
             return resultList;
         }
 
-        public List<ColumnInfo> ListDatabaseTableColumn(ListDatabaseTableColumnInputDto input)
+        public List<ColumnConfigInfo> ListDatabaseTableColumn(ListDatabaseTableColumnInputDto input)
         {
-            var resultList = new List<ColumnInfo>();
+            var resultList = new List<ColumnConfigInfo>();
             var executeSql = $@"
 SELECT TableName = D.name,
        PrimaryKey = CASE
@@ -136,7 +136,7 @@ ORDER BY A.id,
 
             using (var conn = new SqlConnection(input.ConnectionString))
             {
-                resultList = conn.Query<ColumnInfo>(executeSql, sqlParameters).ToList();
+                resultList = conn.Query<ColumnConfigInfo>(executeSql, sqlParameters).ToList();
             }
 
             return resultList;
@@ -145,27 +145,21 @@ ORDER BY A.id,
         /// <summary>
         /// 生成运行代码
         /// </summary>
-        /// <param name="selectedDatabaseTableColumnList"></param>
-        public string GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList, GenerateCodeInputDto input)
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public string GenerateCode(GenerateCodeInputDto input)
         {
-            var baseViewModel = new TemplateViewModel()
-            {
-                ProjectName = input.ProjectName,
-                ModuleName = input.ModuleName,
-                PageName = input.PageName,
-                EntityName = input.EntityName,
-                EntityNamespace = input.EntityNamespace,
-                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
-                TableName = input.TableName,
-                Sorting = input.EntitySortingColumnName
-            };
-
             var targetBaseFolder = Path.Combine($"GeneratedCodes/{DateTime.Now.ToString("yyyyMMdd")}");
             var targetSubFolder = string.Empty;
             var targetFile = string.Empty;
             var targetFilePath = string.Empty;
             var renderedString = string.Empty;
             var relativeFolderPath = string.Empty;
+
+            if (!Directory.Exists(targetBaseFolder))
+            {
+                Directory.CreateDirectory(targetBaseFolder);
+            }
 
             //清空目录
             foreach (var file in Directory.GetFiles(targetBaseFolder))
@@ -202,7 +196,7 @@ ORDER BY A.id,
                 EntityPrimaryKeyType = input.EntityPrimaryKeyType,
                 TableName = input.TableName,
                 Sorting = input.EntitySortingColumnName,
-                AllColumnList = selectedDatabaseTableColumnList
+                ColumnConfigList = input.ColumnConfigList
             }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
@@ -214,9 +208,9 @@ ORDER BY A.id,
             #endregion
 
             #region Application/EntityDto
-            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Application/{baseViewModel.ModuleName}/Dtos");
+            targetSubFolder = Path.Combine($"{input.ProjectName}.Application/{input.ModuleName}/Dtos");
             relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
-            targetFile = $"{baseViewModel.EntityName}Dto.cs";
+            targetFile = $"{input.EntityName}Dto.cs";
 
             if (!Directory.Exists(relativeFolderPath))
             {
@@ -243,7 +237,7 @@ ORDER BY A.id,
                 EntityPrimaryKeyType = input.EntityPrimaryKeyType,
                 TableName = input.TableName,
                 Sorting = input.EntitySortingColumnName,
-                AllColumnList = selectedDatabaseTableColumnList
+                ColumnConfigList = input.ColumnConfigList
             }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
@@ -255,9 +249,9 @@ ORDER BY A.id,
             #endregion
 
             #region Application/EntityInputDto
-            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Application/{baseViewModel.ModuleName}/Dtos");
+            targetSubFolder = Path.Combine($"{input.ProjectName}.Application/{input.ModuleName}/Dtos");
             relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
-            targetFile = $"{baseViewModel.EntityName}InputDto.cs";
+            targetFile = $"{input.EntityName}InputDto.cs";
 
             if (!Directory.Exists(relativeFolderPath))
             {
@@ -284,7 +278,7 @@ ORDER BY A.id,
                 EntityPrimaryKeyType = input.EntityPrimaryKeyType,
                 TableName = input.TableName,
                 Sorting = input.EntitySortingColumnName,
-                AllColumnList = selectedDatabaseTableColumnList
+                ColumnConfigList = input.ColumnConfigList
             }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
@@ -296,9 +290,9 @@ ORDER BY A.id,
             #endregion
 
             #region Application/IAppService
-            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Application/{baseViewModel.ModuleName}");
+            targetSubFolder = Path.Combine($"{input.ProjectName}.Application/{input.ModuleName}");
             relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
-            targetFile = $"I{ baseViewModel.EntityName}AppService.cs";
+            targetFile = $"I{ input.EntityName}AppService.cs";
 
             if (!Directory.Exists(relativeFolderPath))
             {
@@ -325,7 +319,7 @@ ORDER BY A.id,
                 EntityPrimaryKeyType = input.EntityPrimaryKeyType,
                 TableName = input.TableName,
                 Sorting = input.EntitySortingColumnName,
-                AllColumnList = selectedDatabaseTableColumnList
+                ColumnConfigList = input.ColumnConfigList
             }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
@@ -336,9 +330,9 @@ ORDER BY A.id,
             #endregion
 
             #region Application/AppService
-            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Application/{baseViewModel.ModuleName}");
+            targetSubFolder = Path.Combine($"{input.ProjectName}.Application/{input.ModuleName}");
             relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
-            targetFile = $"{baseViewModel.EntityName}AppService.cs";
+            targetFile = $"{input.EntityName}AppService.cs";
 
             if (!Directory.Exists(relativeFolderPath))
             {
@@ -365,7 +359,7 @@ ORDER BY A.id,
                 EntityPrimaryKeyType = input.EntityPrimaryKeyType,
                 TableName = input.TableName,
                 Sorting = input.EntitySortingColumnName,
-                AllColumnList = selectedDatabaseTableColumnList
+                ColumnConfigList = input.ColumnConfigList
             }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
@@ -376,9 +370,9 @@ ORDER BY A.id,
             #endregion
 
             #region Web/Controller
-            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Controllers/{baseViewModel.ModuleName}");
+            targetSubFolder = Path.Combine($"{input.ProjectName}.Web/Controllers/{input.ModuleName}");
             relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
-            targetFile = $"{baseViewModel.EntityName}Controller.cs";
+            targetFile = $"{input.EntityName}Controller.cs";
 
             if (!Directory.Exists(relativeFolderPath))
             {
@@ -405,7 +399,7 @@ ORDER BY A.id,
                 EntityPrimaryKeyType = input.EntityPrimaryKeyType,
                 TableName = input.TableName,
                 Sorting = input.EntitySortingColumnName,
-                AllColumnList = selectedDatabaseTableColumnList
+                ColumnConfigList = input.ColumnConfigList
             }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
@@ -416,9 +410,9 @@ ORDER BY A.id,
             #endregion
 
             #region Web/ViewModel
-            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Models/{baseViewModel.ModuleName}");
+            targetSubFolder = Path.Combine($"{input.ProjectName}.Web/Models/{input.ModuleName}");
             relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
-            targetFile = $"{baseViewModel.EntityName}ViewModel.cs";
+            targetFile = $"{input.EntityName}ViewModel.cs";
 
             if (!Directory.Exists(relativeFolderPath))
             {
@@ -445,7 +439,7 @@ ORDER BY A.id,
                 EntityPrimaryKeyType = input.EntityPrimaryKeyType,
                 TableName = input.TableName,
                 Sorting = input.EntitySortingColumnName,
-                AllColumnList = selectedDatabaseTableColumnList
+                ColumnConfigList = input.ColumnConfigList
             }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
@@ -456,7 +450,7 @@ ORDER BY A.id,
             #endregion
 
             #region Web/CreateOrUpdateModal.cshtml
-            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Views/{baseViewModel.ModuleName}/{baseViewModel.PageName}");
+            targetSubFolder = Path.Combine($"{input.ProjectName}.Web/Views/{input.ModuleName}/{input.PageName}");
             relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "CreateOrUpdateModal.cshtml";
 
@@ -485,7 +479,7 @@ ORDER BY A.id,
                 EntityPrimaryKeyType = input.EntityPrimaryKeyType,
                 TableName = input.TableName,
                 Sorting = input.EntitySortingColumnName,
-                AllColumnList = selectedDatabaseTableColumnList
+                ColumnConfigList = input.ColumnConfigList
             }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
@@ -496,7 +490,7 @@ ORDER BY A.id,
             #endregion
 
             #region Web/CreateOrUpdateModal.js
-            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Views/{baseViewModel.ModuleName}/{baseViewModel.PageName}");
+            targetSubFolder = Path.Combine($"{input.ProjectName}.Web/Views/{input.ModuleName}/{input.PageName}");
             relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "CreateOrUpdateModal.js";
 
@@ -525,7 +519,7 @@ ORDER BY A.id,
                 EntityPrimaryKeyType = input.EntityPrimaryKeyType,
                 TableName = input.TableName,
                 Sorting = input.EntitySortingColumnName,
-                AllColumnList = selectedDatabaseTableColumnList
+                ColumnConfigList = input.ColumnConfigList
             }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
@@ -536,7 +530,7 @@ ORDER BY A.id,
             #endregion
 
             #region Web/Index.cshtml
-            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Views/{baseViewModel.ModuleName}/{baseViewModel.PageName}");
+            targetSubFolder = Path.Combine($"{input.ProjectName}.Web/Views/{input.ModuleName}/{input.PageName}");
             relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "Index.cshtml";
 
@@ -565,7 +559,7 @@ ORDER BY A.id,
                 EntityPrimaryKeyType = input.EntityPrimaryKeyType,
                 TableName = input.TableName,
                 Sorting = input.EntitySortingColumnName,
-                AllColumnList = selectedDatabaseTableColumnList
+                ColumnConfigList = input.ColumnConfigList
             }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);
@@ -576,7 +570,7 @@ ORDER BY A.id,
             #endregion
 
             #region Web/Index.js
-            targetSubFolder = Path.Combine($"{baseViewModel.ProjectName}.Web/Views/{baseViewModel.ModuleName}/{baseViewModel.PageName}");
+            targetSubFolder = Path.Combine($"{input.ProjectName}.Web/Views/{input.ModuleName}/{input.PageName}");
             relativeFolderPath = Path.Combine(targetBaseFolder, targetSubFolder);
             targetFile = "Index.js";
 
@@ -605,7 +599,7 @@ ORDER BY A.id,
                 EntityPrimaryKeyType = input.EntityPrimaryKeyType,
                 TableName = input.TableName,
                 Sorting = input.EntitySortingColumnName,
-                AllColumnList = selectedDatabaseTableColumnList
+                ColumnConfigList = input.ColumnConfigList
             }).Result;
 
             targetFilePath = Path.Combine(relativeFolderPath, targetFile);

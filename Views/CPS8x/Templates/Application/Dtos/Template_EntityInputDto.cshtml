@@ -14,10 +14,18 @@ namespace @(Model.ProjectName).@(Model.ModuleName).Dtos
      public class @(Model.EntityName)InputDto : PagedSortedAndFilteredInputDto, IShouldNormalize
     {
 @{
-        foreach (var column in Model.AllColumnList)
+        foreach (var column in Model.ColumnConfigList)
         {
-@Html.Raw($"        public {column.GetCSharpDataType()} {column.ColumnName} {{ get; set; }}" + Environment.NewLine);
-            @Html.Raw(Environment.NewLine);
+            if (column.IsEnumField)
+            {
+                @Html.Raw($"        public {column.EnumFieldName} {column.ColumnName} {{ get; set; }}" + Environment.NewLine);
+                @Html.Raw(Environment.NewLine);
+            }
+            else
+            {
+                @Html.Raw($"        public {column.GetCSharpDataType()} {column.ColumnName} {{ get; set; }}" + Environment.NewLine);
+                @Html.Raw(Environment.NewLine);
+            }
         }
 }
         public void Normalize()

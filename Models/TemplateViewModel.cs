@@ -7,25 +7,21 @@ namespace ABPCodeGenerator.Models
     {
         public string ProjectName = "WIMI.BTL";
 
-        public string ModuleName = "TestEntity";
+        public string ModuleName = "";
 
-        public string PageName = "TestEntity";
+        public string PageName = "";
 
-        public string EntityName = "TestEntity";
+        public string EntityName = "";
 
-        public string EntityNamespace = "WIMI.BTL.TestEntity";
+        public string EntityNamespace = "";
 
-        public string EntityPrimaryKeyType = "int";
+        public string EntityPrimaryKeyType = "";
 
-        public string TableName = "TestEntities";
+        public string TableName = "";
 
         public string Sorting = "Id";
 
-        public List<ColumnInfo> AllColumnList = new List<ColumnInfo>();
-
-        public List<ColumnInfo> SearchColumnList = new List<ColumnInfo>();
-
-        public List<ColumnInfo> TableColumnList = new List<ColumnInfo>();
+        public List<ColumnConfigInfo> ColumnConfigList = new List<ColumnConfigInfo>();
     }
 
     public class ReadmeViewModel : TemplateViewModel

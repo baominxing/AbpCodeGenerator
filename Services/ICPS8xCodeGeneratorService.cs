@@ -8,8 +8,8 @@ namespace ABPCodeGenerator.Services
     {
         List<dynamic> ListDatabaseTableName(ListDatabaseTableNameInputDto input);
 
-        List<ColumnInfo> ListDatabaseTableColumn(ListDatabaseTableColumnInputDto input);
+        List<ColumnConfigInfo> ListDatabaseTableColumn(ListDatabaseTableColumnInputDto input);
 
-        string GenerateCode(List<ColumnInfo> selectedDatabaseTableColumnList, GenerateCodeInputDto input);
+        string GenerateCode(GenerateCodeInputDto input);
     }
 }

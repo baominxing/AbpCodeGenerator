@@ -9,7 +9,7 @@
     <form name="CreateOrUpdateForm" role="form" novalidate class="form-validation">
         <div class="row">
             @{
-                foreach (var item in Model.AllColumnList)
+                foreach (var item in Model.ColumnConfigList.Where(s=>!s.IsAuditFiled))
                 {
                     <div class="form-group form-md-line-input form-md-floating-label col-xs-12 col-sm-6">
                         <label>@Html.Raw($"@L(\"{item.ColumnName}\")")</label>

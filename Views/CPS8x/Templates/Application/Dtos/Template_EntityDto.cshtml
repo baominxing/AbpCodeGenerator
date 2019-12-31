@@ -1,4 +1,5 @@
 ﻿@model ABPCodeGenerator.Models.EntityDtoViewModel
+using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using System;
 using @(Model.EntityNamespace);
@@ -6,13 +7,21 @@ using @(Model.EntityNamespace);
 namespace @(Model.ProjectName).@(Model.ModuleName).Dtos
 {
     [AutoMap(typeof(@(Model.EntityName)))]
-    public class @(Model.EntityName)Dto
+    public class @(Model.EntityName)Dto: FullAuditedEntityDto<@(Model.EntityPrimaryKeyType)>
     {
     @{
-        foreach (var column in Model.AllColumnList)
+        foreach (var column in Model.ColumnConfigList.Where(s=>!s.IsAuditFiled))
         {
-            @Html.Raw($"        public {column.GetCSharpDataType()} {column.ColumnName} {{ get; set; }}" + Environment.NewLine);
-            @Html.Raw(Environment.NewLine);
+            if (column.IsEnumField)
+            {
+                @Html.Raw($"        public {column.EnumFieldName} {column.ColumnName} {{ get; set; }}" + Environment.NewLine);
+                @Html.Raw(Environment.NewLine);
+            }
+            else
+            {
+                @Html.Raw($"        public {column.GetCSharpDataType()} {column.ColumnName} {{ get; set; }}" + Environment.NewLine);
+                @Html.Raw(Environment.NewLine);
+            }
         }
     }
     }

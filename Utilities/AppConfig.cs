@@ -5,21 +5,26 @@ using System.Threading.Tasks;
 
 namespace ABPCodeGenerator.Utilities
 {
-    public class AppConfig
+    public static class AppConfig
     {
 
-        public class ErrorCodes
+        public static class ErrorCodes
         {
-            public const string NONE = "0";
+            public readonly static string NONE = "0";
 
-            public const string ERROR = "1";
+            public readonly static string ERROR = "1";
         }
 
-        public class DatabaseTableColumn
+        public static class DatabaseTableColumn
         {
-            public bool IsPrimaryKey { get; set; }
+            public static bool IsPrimaryKey { get; set; }
 
-            public bool IsNullable { get; set; }
+            public static bool IsNullable { get; set; }
+        }
+
+        public static class CPS8x
+        {
+            public static readonly List<string> AuditedFieldList = new List<string> { "Id", "CreationTime", "CreatorUserId", "LastModifierUserId", "LastModificationTime", "IsDeleted", "DeleterUserId", "DeletionTime" };
         }
     }
 }
