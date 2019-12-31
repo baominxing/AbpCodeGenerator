@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "ABPCodeGenerator";
-    ViewBag.PageName = "GenerateCode";
+    ViewBag.PageName = "ExternalMemberForDto";
 }
 <style>
     th, td {
@@ -11,7 +11,7 @@
 <div class="container-fluid">
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">生成页面<small></small></h1>
+        <h1 class="h2">生成Dto<small></small></h1>
     </div>
 
     <div class="card shadow">
@@ -30,6 +30,12 @@
 
     <div class="card mt-3 shadow">
         <div class="card-body">
+            <textarea id="dto" class="w-100" style="height:500px;"></textarea>
+        </div>
+    </div>
+
+    <div class="card mt-3 shadow">
+        <div class="card-body">
             <table class="table table-bordered table-hover w-100" id="Table"></table>
         </div>
     </div>
@@ -40,7 +46,7 @@
     <script>
         var baseUrl = site.app.setting.service.baseUrl;
         var page, localStorageItem = null;
-        var selectionArray = [{ value: "true", text: "是" }, { value: "false", text: "否" }];
+        var selectionArray = [{ value: true, text: "是" }, { value: false, text: "否" }];
 
         page = {
             $SelectDatabaseTableName: $("#SelectDatabaseTableName"),
@@ -167,74 +173,67 @@
                                     "data": "ColumnName"
                                 },
                                 {
-                                    "title": '是否查询条件(下拉选择)',
-                                    "data": "IsSearchFiled",
+                                    "title": '是否Dto字段(下拉选择)',
+                                    "data": "IsDtoFiled",
                                     "render": function (data, type, row, meta) {
-                                        return data === "true" ? "是" : "否";
+                                        return data === true ? "是" : "否";
                                     }
                                 },
                                 {
                                     "title": '是否枚举类型(下拉选择)',
                                     "data": "IsEnumField",
                                     "render": function (data, type, row, meta) {
-                                        return data === "true" ? "是" : "否";
+                                        return data === true ? "是" : "否";
                                     }
                                 },
                                 {
                                     "title": '枚举字段名称(点击填写)',
                                     "data": "EnumFieldName"
-                                },
-                                {
-                                    "title": '中文多语言(点击填写)',
-                                    "data": "MultiLanguage_CN"
-                                },
-                                {
-                                    "title": '英文多语言(点击填写)',
-                                    "data": "MultiLanguage_US"
                                 }
                             ],
-                            "columnDefs": [{
-                                "targets": [5, 6, 7],
-                                createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+                            "columnDefs": [
+                                {
+                                    "targets": [3, 4],
+                                    createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
 
-                                    $(cell).click(function () {
-                                        $(this).html('<input type="text" size="16" style="width: 100%"/>');
-                                        var aInput = $(this).find(":input");
-                                        aInput.focus().val(cellData);
-                                    });
+                                        $(cell).click(function () {
+                                            $(this).html(page.BuildSelection(selectionArray));
+                                            var aInput = $(this).find(":input");
+                                            aInput.focus().val("");
+                                        });
 
-                                    $(cell).on("blur", ":input", function () {
-                                        var text = $(this).val();
-                                        $(cell).html(text);
-                                        page.DataTable.cell(cell).data(text)
-                                    })
-                                }
-                            },
-                            {
-                                "targets": [3, 4],
-                                createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+                                        $(cell).on("click", ":input", function (e) {
+                                            e.stopPropagation();
+                                        });
 
-                                    $(cell).click(function () {
-                                        $(this).html(page.BuildSelection(selectionArray));
-                                        var aInput = $(this).find(":input");
-                                        aInput.focus().val("");
-                                    });
+                                        $(cell).on("change", ":input", function () {
+                                            $(this).blur();
+                                        });
 
-                                    $(cell).on("click", ":input", function (e) {
-                                        e.stopPropagation();
-                                    });
+                                        $(cell).on("blur", ":input", function () {
+                                            var value = $(this).find("option:selected").val();
+                                            var text = $(this).find("option:selected").text();
+                                            page.DataTable.cell(cell).data(value)
+                                        });
+                                    }
+                                },
+                                {
+                                    "targets": [5],
+                                    createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
 
-                                    $(cell).on("change", ":input", function () {
-                                        $(this).blur();
-                                    });
+                                        $(cell).click(function () {
+                                            $(this).html('<input type="text" size="16" style="width: 100%"/>');
+                                            var aInput = $(this).find(":input");
+                                            aInput.focus().val(cellData);
+                                        });
 
-                                    $(cell).on("blur", ":input", function () {
-                                        var value = $(this).find("option:selected").val();
-                                        var text = $(this).find("option:selected").text();
-                                        page.DataTable.cell(cell).data(value)
-                                    });
-                                }
-                            }],
+                                        $(cell).on("blur", ":input", function () {
+                                            var text = $(this).val();
+                                            $(cell).html(text);
+                                            page.DataTable.cell(cell).data(text)
+                                        })
+                                    }
+                                }],
                         });
 
                     } else {
@@ -258,7 +257,8 @@
                     if (result.errorCode === site.app.setting.service.noneErrorCode) {
                         site.app.notify.success("生成成功");
 
-                        page.DownloadGeneratedZipFile(result.zipFilePath);
+                        $("#dto").text(result.dtoString);
+                        $("#dto").show();
                     } else {
                         site.app.notify.error(result.errorMessage);
                     }
@@ -293,6 +293,8 @@
             },
 
             Init: function () {
+                $("#dto").hide();
+
                 page.LoadLocalStorageItem();
 
                 page.$Search.click(function () {

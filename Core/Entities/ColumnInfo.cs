@@ -41,6 +41,8 @@ namespace ABPCodeGenerator.Core.Entities
 
         public bool IsEnumField { get; set; }
 
+        public bool IsDtoFiled { get; set; } = true;
+
         public string EnumFieldName { get; set; }
 
         public string MultiLanguage_CN { get; set; }

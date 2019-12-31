@@ -147,7 +147,7 @@ ORDER BY A.id,
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public string GenerateCode(GenerateCodeInputDto input)
+        public string GeneratePage(GeneratePageInputDto input)
         {
             var targetBaseFolder = Path.Combine($"GeneratedCodes/{DateTime.Now.ToString("yyyyMMdd")}");
             var targetSubFolder = string.Empty;
@@ -624,6 +624,73 @@ ORDER BY A.id,
             #endregion
 
             return zipFilePath;
+        }
+
+
+        /// <summary>
+        /// 生成运行代码
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public string GenerateDto(GeneratePageInputDto input)
+        {
+            var targetBaseFolder = Path.Combine($"GeneratedDtos/{DateTime.Now.ToString("yyyyMMdd")}");
+            var targetSubFolder = string.Empty;
+            var targetFile = string.Empty;
+            var targetFilePath = string.Empty;
+            var renderedString = string.Empty;
+            var relativeFolderPath = string.Empty;
+
+            if (!Directory.Exists(targetBaseFolder))
+            {
+                Directory.CreateDirectory(targetBaseFolder);
+            }
+
+            //清空目录
+            foreach (var file in Directory.GetFiles(targetBaseFolder))
+            {
+                File.Delete(file);
+            }
+
+            #region Application/EntityDto
+            relativeFolderPath = Path.Combine(targetBaseFolder);
+            targetFile = $"{input.TableName}Dto.cs";
+
+            if (!Directory.Exists(relativeFolderPath))
+            {
+                Directory.CreateDirectory(relativeFolderPath);
+            }
+
+            if (File.Exists(Path.Combine(relativeFolderPath, targetFile)))
+            {
+                File.Delete(Path.Combine(relativeFolderPath, targetFile));
+            }
+
+            using (File.Create(Path.Combine(relativeFolderPath, targetFile)))
+            {
+
+            }
+
+            renderedString = this.RenderToStringAsync("CPS8x/Templates/Application/Dtos/Template_EntityDto", new EntityDtoViewModel()
+            {
+                ProjectName = input.ProjectName,
+                ModuleName = input.ModuleName,
+                PageName = input.PageName,
+                EntityName = input.EntityName,
+                EntityNamespace = input.EntityNamespace,
+                EntityPrimaryKeyType = input.EntityPrimaryKeyType,
+                TableName = input.TableName,
+                Sorting = input.EntitySortingColumnName,
+                ColumnConfigList = input.ColumnConfigList
+            }).Result;
+
+            targetFilePath = Path.Combine(relativeFolderPath, targetFile);
+
+            File.WriteAllText(targetFilePath, renderedString, Encoding.UTF8);
+
+            #endregion
+
+            return renderedString;
         }
 
         /// <summary>

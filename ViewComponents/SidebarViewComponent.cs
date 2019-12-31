@@ -33,7 +33,10 @@ namespace ABPCodeGenerator.ViewComponents
                             IsPage = true, ModuleName = "CPS8.x代码生成管理", PageCode="BasicSetting",PageName = "基础配置", PageUrl = "/BasicSetting"
                         },
                         new MenuItem {
-                            IsPage = true, ModuleName = "CPS8.x代码生成管理", PageCode="GenerateCode",PageName = "代码生成", PageUrl = "/GenerateCode"
+                            IsPage = true, ModuleName = "CPS8.x代码生成管理", PageCode="GenerateCode",PageName = "生成页面", PageUrl = "/GenerateCode"
+                        },
+                        new MenuItem {
+                            IsPage = true, ModuleName = "CPS8.x代码生成管理", PageCode="ExternalMemberForDto",PageName = "生成Dto", PageUrl = "/ExternalMemberForDto"
                         }
                     }
                 },

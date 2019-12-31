@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "ABPCodeGenerator";
+    ViewBag.PageName = "ExternalMember";
+}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">工作台<small></small></h1>
+    </div>
+
+    <span class="col-form-label">
+        <pre>
+ 使用说明：
+
+第一步：需要现在基础配置页面，维护一些基础信息，例如数据库字段
+
+第二步：在生成代码页面，选择之前填写的要生成的数据库表后，点击查询，选择要生成哪些字段，然后点击生成按钮，会生一个压缩包下载，解压后会看到一下文件
+
+Application/Dtos/Dto.cs
+Application/Dtos/InputDto.cs
+Application/AppService.cs
+Application/IAppService.cs
+Web/Controllers/Controller.cs
+Web/Models/ViewModel.cs
+Web/Views/CreateOrUpdateModal.cshtml
+Web/Views/CreateOrUpdateModal.js
+Web/Views/Index.cshtml
+Web/Views/Index.js
+
+和Readme.txt,其中Readme.txt包含了菜单，权限和多语言相关的配置项，需要手动拷贝其中内容到项目中，其他文件按照生成的路径，直接覆盖即可。
+
+
+PS:目前功能比较间简单，如果有在使用中需要有改进的地方，可以把建议提到<a href="https://www.tapd.cn/35889048/prong/stories/stories_list">TAPD</a>
+</pre>
+    </span>
+
+</div>

@@ -71,14 +71,14 @@ namespace @(Model.ProjectName).@(Model.ModuleName)
             };
         }
 
-        public async Task Create@(Model.EntityName)(@(Model.EntityName)InputDto input)
+        public async Task Create(@(Model.EntityName)InputDto input)
         {
             var entity = input.MapTo<@(Model.EntityName)>();
 
             await this.@(Model.EntityName.ToLower())Repository.InsertAsync(entity);
         }
 
-        public async Task Update@(Model.EntityName)(@(Model.EntityName)InputDto input)
+        public async Task Update(@(Model.EntityName)InputDto input)
         {
             var entity = this.@(Model.EntityName.ToLower())Repository.FirstOrDefault(s => s.Id == input.Id);
 
@@ -92,14 +92,14 @@ namespace @(Model.ProjectName).@(Model.ModuleName)
             await this.@(Model.EntityName.ToLower())Repository.UpdateAsync(entity);
         }
 
-        public async Task Delete@(Model.EntityName)(@(Model.EntityName)InputDto input)
+        public async Task Delete(@(Model.EntityName)InputDto input)
         {
             var entity = this.@(Model.EntityName.ToLower())Repository.FirstOrDefault(s => s.Id == input.Id);
 
             await this.@(Model.EntityName.ToLower())Repository.DeleteAsync(entity);
         }
 
-        public async Task<@(Model.EntityName)Dto> Get@(Model.EntityName)ForEdit(@(Model.EntityName)InputDto input)
+        public async Task<@(Model.EntityName)Dto> GetForEdit(@(Model.EntityName)InputDto input)
         {
             var query = from @(Model.EntityName.ToLower()) in this.@(Model.EntityName.ToLower())Repository.GetAll()
                         where @(Model.EntityName.ToLower()).Id == input.Id

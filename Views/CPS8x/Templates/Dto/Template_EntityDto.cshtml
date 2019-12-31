@@ -1,0 +1,28 @@
+﻿@model ABPCodeGenerator.Models.EntityDtoViewModel
+using Abp.Application.Services.Dto;
+using Abp.AutoMapper;
+using System;
+
+namespace EntityNameSpace
+{
+    [AutoMap(typeof(EntityName)))]
+    public class EntityNameDto: FullAuditedEntityDto<EntityPrimaryKeyType>
+    {
+    @{
+        foreach (var column in Model.ColumnConfigList.Where(s => s.IsDtoFiled))
+        {
+            if (column.IsEnumField)
+            {
+                @Html.Raw($"        public {column.EnumFieldName} {column.ColumnName} {{ get; set; }}" + Environment.NewLine);
+                @Html.Raw(Environment.NewLine);
+            }
+            else
+            {
+                @Html.Raw($"        public {column.GetCSharpDataType()} {column.ColumnName} {{ get; set; }}" + Environment.NewLine);
+                @Html.Raw(Environment.NewLine);
+            }
+        }
+    }
+    }
+}
+

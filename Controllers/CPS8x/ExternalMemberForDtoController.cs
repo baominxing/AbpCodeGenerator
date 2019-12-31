@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using ABPCodeGenerator.Core.Entities;
 using ABPCodeGenerator.Filters;
 using ABPCodeGenerator.Services;
@@ -13,11 +12,11 @@ using Newtonsoft.Json;
 
 namespace ABPCodeGenerator.Controllers.CPS8x
 {
-    public class GenerateCodeController : BaseController
+    public class ExternalMemberForDtoController : BaseController
     {
         private readonly ICPS8xCodeGeneratorService templateService;
         private readonly IWebHostEnvironment webHostEnvironment;
-        public GenerateCodeController(
+        public ExternalMemberForDtoController(
             ICPS8xCodeGeneratorService templateService,
             IWebHostEnvironment webHostEnvironment,
             ILogger<BaseController> logger) : base(logger)
@@ -28,7 +27,7 @@ namespace ABPCodeGenerator.Controllers.CPS8x
 
         public IActionResult Index()
         {
-            return View("~/Views/CPS8x/GenerateCode/Index.cshtml");
+            return View("~/Views/CPS8x/ExternalMemberForDto/Index.cshtml");
         }
 
         [HttpPost]
@@ -79,7 +78,7 @@ namespace ABPCodeGenerator.Controllers.CPS8x
         {
             var errorMessage = string.Empty;
             var errorCode = AppConfig.ErrorCodes.NONE;
-            var zipFilePath = string.Empty;
+            var dtoString = string.Empty;
             try
             {
                 //标识审计属性
@@ -92,7 +91,7 @@ namespace ABPCodeGenerator.Controllers.CPS8x
                 }
 
                 //取出页面上选择的列
-                zipFilePath = this.templateService.GeneratePage(input);
+                dtoString = this.templateService.GenerateDto(input);
             }
             catch (Exception ex)
             {
@@ -100,7 +99,7 @@ namespace ABPCodeGenerator.Controllers.CPS8x
                 errorMessage = ex.Message;
             }
 
-            return new JsonResult(new { errorCode, errorMessage, zipFilePath = zipFilePath });
+            return new JsonResult(new { errorCode, errorMessage, dtoString = dtoString });
         }
 
         [ParameterNullOrEmptyFilter]

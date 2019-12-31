@@ -10,6 +10,8 @@ namespace ABPCodeGenerator.Services
 
         List<ColumnConfigInfo> ListDatabaseTableColumn(ListDatabaseTableColumnInputDto input);
 
-        string GenerateCode(GenerateCodeInputDto input);
+        string GeneratePage(GeneratePageInputDto input);
+
+        string GenerateDto(GeneratePageInputDto input);
     }
 }

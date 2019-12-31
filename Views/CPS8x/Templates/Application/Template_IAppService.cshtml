@@ -10,12 +10,12 @@ namespace @(Model.ProjectName).@(Model.ModuleName)
     {
         Task<DatatablesPagedResultOutput<@(Model.EntityName)Dto>> List@(Model.EntityName)(@(Model.EntityName)InputDto input);
 
-        Task Create@(Model.EntityName)(@(Model.EntityName)InputDto input);
+        Task Create(@(Model.EntityName)InputDto input);
 
-        Task Update@(Model.EntityName)(@(Model.EntityName)InputDto input);
+        Task Update(@(Model.EntityName)InputDto input);
 
-        Task Delete@(Model.EntityName)(@(Model.EntityName)InputDto input);
+        Task Delete(@(Model.EntityName)InputDto input);
 
-        Task<@(Model.EntityName)Dto> Get@(Model.EntityName)ForEdit(@(Model.EntityName)InputDto input);
+        Task<@(Model.EntityName)Dto> GetForEdit(@(Model.EntityName)InputDto input);
     }
 }
