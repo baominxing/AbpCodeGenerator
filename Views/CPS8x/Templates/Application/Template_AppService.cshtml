@@ -99,7 +99,7 @@ namespace @(Model.ProjectName).@(Model.ModuleName)
             await this.@(Model.EntityName.ToLower())Repository.DeleteAsync(entity);
         }
 
-        public async Task<@(Model.EntityName)Dto> GetForEdit(@(Model.EntityName)InputDto input)
+        public async Task<@(Model.EntityName)Dto> Get(@(Model.EntityName)InputDto input)
         {
             var query = from @(Model.EntityName.ToLower()) in this.@(Model.EntityName.ToLower())Repository.GetAll()
                         where @(Model.EntityName.ToLower()).Id == input.Id
