@@ -34,7 +34,7 @@ namespace @(Model.ProjectName).Web.Controllers.@(Model.EntityName)
 
             if (id.HasValue)
             {
-                var dto = await this.@(Model.EntityName.ToLower())AppService.Get@(Model.EntityName)ForEdit(new @(Model.EntityName)InputDto() { Id = id.Value });
+                var dto = await this.@(Model.EntityName.ToLower())AppService.Get(new @(Model.EntityName)InputDto() { Id = id.Value });
               
                 if (dto != null)
                 {

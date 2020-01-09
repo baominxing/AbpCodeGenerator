@@ -27,7 +27,7 @@
                 abp.message.confirm(app.localize("WhetherToDelete@(Model.EntityName)"),
                     function (isConfirmed) {
                         if (isConfirmed) {
-                            service.delete@(Model.EntityName)({ Id: rowData.id })
+                            service.delete({ Id: rowData.id })
                                 .done(function () {
                                     abp.notify.success(app.localize("SuccessfullyDeleted"));
                                     page.dataTable.ajax.reload(null);

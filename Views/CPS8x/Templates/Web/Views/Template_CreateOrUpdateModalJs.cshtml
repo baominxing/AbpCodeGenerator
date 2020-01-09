@@ -21,7 +21,7 @@
 
             if (parameters.Id === "0") {
                 _modalManager.setBusy(true);
-                service.create@(Model.EntityName)(parameters)
+                service.create(parameters)
                     .done(function (result) {
                         abp.notify.info(app.localize("SavedSuccessfully"));
                         _modalManager.setResult(result);
@@ -32,7 +32,7 @@
                     });
             } else {
                 _modalManager.setBusy(true);
-                service.update@(Model.EntityName)(parameters)
+                service.update(parameters)
                     .done(function (result) {
                         abp.notify.info(app.localize("SavedSuccessfully"));
                         _modalManager.setResult(result);
