@@ -37,8 +37,6 @@ namespace ABPCodeGenerator
                 app.UseHsts();
             }
 
-            app.UseCors(builder => builder.WithOrigins("https://localhost:5001/"));
-
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
@@ -46,6 +44,8 @@ namespace ABPCodeGenerator
             //app.UseIdentity();
 
             app.UseRouting();
+            
+            app.UseCors(builder => builder.WithOrigins("https://localhost:5001/"));
 
             app.UseAuthorization();
 
