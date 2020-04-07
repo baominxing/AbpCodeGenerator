@@ -191,6 +191,13 @@
                                 {
                                     "title": '英文多语言(点击填写)',
                                     "data": "MultiLanguage_US"
+                                },
+                                {
+                                    "title": '是否唯一(下拉选择)',
+                                    "data": "IsUniqueField",    
+                                    "render": function (data, type, row, meta) {
+                                        return data === "true" ? "是" : "否";
+                                    }
                                 }
                             ],
                             "columnDefs": [{
@@ -211,7 +218,7 @@
                                 }
                             },
                             {
-                                "targets": [3, 4],
+                                "targets": [3, 4, 8],
                                 createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
 
                                     $(cell).click(function () {

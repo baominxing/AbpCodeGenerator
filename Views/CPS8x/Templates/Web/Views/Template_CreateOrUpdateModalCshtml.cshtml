@@ -14,7 +14,7 @@
                     <div class="form-group form-md-line-input form-md-floating-label col-xs-12 col-sm-6">
                         <label>@Html.Raw($"@L(\"{item.ColumnName}\")")</label>
                         <input class="form-control @item.ColumnName" type="text" name="@item.ColumnName" required maxlength="100"
-                               value="@Html.Raw($"@(Model.IsEditMode ? Model.Dto.{item.ColumnName} : {item.GetColumnTypeDefaultValue()})")">
+                               value="@Html.Raw($"@(Model.Dto.{item.ColumnName})")">
                     </div>
                 }
             }

@@ -49,6 +49,8 @@ namespace ABPCodeGenerator.Core.Entities
 
         public string MultiLanguage_US { get; set; }
 
+        public bool IsUniqueField { get; set; }
+
         public string GetCSharpDataType()
         {
             return TypeHelper.SqlServerType2CSharpType(this.DataType) + (IsNullable() ? "?" : "");

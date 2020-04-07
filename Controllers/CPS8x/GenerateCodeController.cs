@@ -107,10 +107,10 @@ namespace ABPCodeGenerator.Controllers.CPS8x
         public FileResult DownloadGeneratedZipFile(string relativeFilePath)
         {
             string filePath = Path.Combine(this.webHostEnvironment.ContentRootPath, relativeFilePath);
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
 
-            FileStream fstrm = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read);
+            return File(fileBytes, "application/octet-stream", Guid.NewGuid() + ".zip"); //welcome.txt是客户端保存的名字
 
-            return File(fstrm, "application/octet-stream", Guid.NewGuid() + ".zip"); //welcome.txt是客户端保存的名字
         }
     }
 }
