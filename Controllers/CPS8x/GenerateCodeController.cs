@@ -7,7 +7,9 @@ using ABPCodeGenerator.Filters;
 using ABPCodeGenerator.Services;
 using ABPCodeGenerator.Utilities;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -111,6 +113,40 @@ namespace ABPCodeGenerator.Controllers.CPS8x
 
             return File(fileBytes, "application/octet-stream", Guid.NewGuid() + ".zip"); //welcome.txt是客户端保存的名字
 
+        }
+
+        public int GetServiceList([FromServices] IEnumerable<ICPS8xCodeGeneratorService> services)
+        {
+            foreach (var item in services)
+            {
+                Console.WriteLine($"获取到服务实例:{item.ToString()}:{item.GetHashCode()}");
+            }
+
+            return 1;
+        }
+
+        public int GetOrderService(
+            [FromServices]IOrderService orderService,
+            [FromServices]IOrderService orderService2,
+            [FromServices] IApplicationLifetime applicationLifetime
+            )
+        {
+
+            #region MyRegion
+            Console.WriteLine("1");
+            using (var scope = HttpContext.RequestServices.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetService<IOrderService>();
+            }
+            Console.WriteLine("2");
+            #endregion
+
+
+            Console.WriteLine("接口请求处理结束");
+
+            applicationLifetime.StopApplication();
+
+            return 1;
         }
     }
 }
