@@ -14,5 +14,7 @@ namespace ABPCodeGenerator.Services
         string GeneratePage(GeneratePageInputDto input);
 
         string GenerateDto(GeneratePageInputDto input);
+
+        void ShowCode();
     }
 }

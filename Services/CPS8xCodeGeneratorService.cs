@@ -732,5 +732,11 @@ ORDER BY A.id,
                 return sw.ToString();
             }
         }
+
+        public void ShowCode()
+        {
+            Console.WriteLine($"{this.GetHashCode()}");
+        }
+
     }
 }

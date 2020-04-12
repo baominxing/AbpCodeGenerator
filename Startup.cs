@@ -1,7 +1,9 @@
+using ABPCodeGenerator.Interceptors;
 using ABPCodeGenerator.Services;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Autofac.Extras.DynamicProxy;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -12,6 +14,7 @@ namespace ABPCodeGenerator
 {
     public class Startup
     {
+        public ILifetimeScope AutofacContainer { get; set; }
 
         public Startup(
             IConfiguration configuration)
@@ -23,6 +26,7 @@ namespace ABPCodeGenerator
 
         public IConfiguration Configuration { get; }
 
+        #region 默认依赖注入实现
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -80,10 +84,94 @@ namespace ABPCodeGenerator
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        //public void Configure(IApplicationBuilder app, IHostEnvironment env)
+        //{
+
+        //    Console.WriteLine("StartUp.Configure");
+
+        //    if (env.IsDevelopment())
+        //    {
+        //        app.UseDeveloperExceptionPage();
+        //    }
+        //    else
+        //    {
+        //        app.UseExceptionHandler("/Home/Error");
+        //        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        //        app.UseHsts();
+        //    }
+
+        //    app.UseHttpsRedirection();
+
+        //    app.UseStaticFiles();
+
+        //    //app.UseIdentity();
+
+        //    app.UseRouting();
+
+        //    app.UseCors(builder => builder.WithOrigins("https://localhost:5001/"));
+
+        //    app.UseAuthorization();
+
+        //    app.UseEndpoints(endpoints =>
+        //    {
+        //        endpoints.MapControllerRoute(
+        //            name: "default",
+        //            pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+        //    });
+        //}
+        #endregion
+
+        #region Autofac依赖注入实现
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            ////默认注册
+            //builder.RegisterType<OrderService>().As<IOrderService>();
+            ////命名注册
+            //builder.RegisterType<OrderService>().Named<IOrderService>("orderservice");
+            ////属性注册
+            //builder.RegisterType<OrderNameService>();
+            //builder.RegisterType<OrderService>().Named<IOrderService>("orderservice2").PropertiesAutowired();
+            ////使用拦截器
+            //builder.RegisterType<MyInterceptor>();
+            //builder.RegisterType<OrderService>().Named<IOrderService>("orderservice3").PropertiesAutowired().InterceptedBy(typeof(MyInterceptor)).EnableClassInterceptors();
+
+            #region 子容器
+            builder.RegisterType<OrderNameService>().InstancePerMatchingLifetimeScope("myscope");//myscope的容器对象会被myscope2的容器对象覆盖
+            builder.RegisterType<OrderNameService>().InstancePerMatchingLifetimeScope("myscope2");
+            #endregion
+        }
+
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
+            this.AutofacContainer = app.ApplicationServices.GetAutofacRoot();
 
-            Console.WriteLine("StartUp.Configure");
+            //var service1 = this.AutofacContainer.Resolve<IOrderService>();
+            //service1.Show();
+
+            //var orderservice = this.AutofacContainer.ResolveNamed<IOrderService>("orderservice");
+            //orderservice.Show();
+
+            //var orderservice2 = this.AutofacContainer.ResolveNamed<IOrderService>("orderservice2");
+            //orderservice2.Show();
+
+            //var orderservice3 = this.AutofacContainer.ResolveNamed<IOrderService>("orderservice3");
+            //orderservice3.Show();
+
+
+            using (var myscpoe = this.AutofacContainer.BeginLifetimeScope("myscope2"))
+            {
+                var s4 = myscpoe.Resolve<OrderNameService>();
+
+                using (var myscpoe2 = myscpoe.BeginLifetimeScope("myscope"))
+                {
+                    var s5 = myscpoe2.Resolve<OrderNameService>();
+                    var s6 = myscpoe2.Resolve<OrderNameService>();
+
+                    Console.WriteLine($"s4==s5?{s4 == s5}");
+                    Console.WriteLine($"s4==s6?{s4 == s6}");
+                    Console.WriteLine($"s5==s6?{s5 == s6}");
+                }
+            }
 
             if (env.IsDevelopment())
             {
@@ -115,5 +203,6 @@ namespace ABPCodeGenerator
                     pattern: "{controller=Dashboard}/{action=Index}/{id?}");
             });
         }
+        #endregion
     }
 }
