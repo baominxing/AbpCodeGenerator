@@ -1,8 +1,6 @@
-using ABPCodeGenerator.Interceptors;
 using ABPCodeGenerator.Services;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Autofac.Extras.DynamicProxy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

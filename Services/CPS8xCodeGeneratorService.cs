@@ -162,7 +162,7 @@ ORDER BY A.id,
             }
 
             //清空目录
-            foreach (var file in Directory.GetFiles(targetBaseFolder))
+            foreach (var file in Directory.GetFiles(targetBaseFolder, "*", SearchOption.AllDirectories))
             {
                 File.Delete(file);
             }

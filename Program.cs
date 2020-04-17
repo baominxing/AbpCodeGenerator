@@ -25,10 +25,10 @@ namespace ABPCodeGenerator
             #endregion
 
             #region 文件配置提供程序
-            ConfigurationFileDemo();
+            //ConfigurationFileDemo();
             #endregion
 
-            //CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
         private static void ConfigurationFileDemo()
