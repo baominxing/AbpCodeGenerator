@@ -45,7 +45,7 @@
                         {
                             <div class="col-md-3">
                                 <label class="col-sm-4 control-label">
-                                    <b class="text-primary">@Html.Raw($"@L(\"{item.ColumnName}\")")</b>
+                                    <b class="text-primary">@Html.Raw($"@L(\"{Model.PageName}_{item.ColumnName}\")")</b>
                                 </label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control" id="@item.ColumnName" />

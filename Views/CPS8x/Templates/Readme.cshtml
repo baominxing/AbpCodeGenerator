@@ -62,12 +62,12 @@ menu.AddItem(
 
 foreach (var column in Model.ColumnConfigList.Where(s=>!s.IsAuditFiled))
 {  
-@Html.Raw($"<text name=\"{column.ColumnName}\" value=\"{column.MultiLanguage_CN}\" />" + Environment.NewLine);
+@Html.Raw($"<text name=\"{Model.PageName}_{column.ColumnName}\" value=\"{column.MultiLanguage_CN}\" />" + Environment.NewLine);
 }
 
 foreach (var column in Model.ColumnConfigList.Where(s=>s.IsUniqueField))
  {
-@Html.Raw($"<text name=\"{column.ColumnName}MustBeUnique\" value=\"\" />" + Environment.NewLine);
+@Html.Raw($"<text name=\"{Model.PageName}_{column.ColumnName}MustBeUnique\" value=\"\" />" + Environment.NewLine);
  }
 }
 <!-- #endregion -->

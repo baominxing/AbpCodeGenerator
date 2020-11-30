@@ -12,7 +12,7 @@
                 foreach (var item in Model.ColumnConfigList.Where(s=>!s.IsAuditFiled))
                 {
                     <div class="form-group form-md-line-input form-md-floating-label col-xs-12 col-sm-6">
-                        <label>@Html.Raw($"@L(\"{item.ColumnName}\")")</label>
+                        <label>@Html.Raw($"@L(\"{Model.PageName}_{item.ColumnName}\")")</label>
                         <input class="form-control @item.ColumnName" type="text" name="@item.ColumnName" required maxlength="100"
                                value="@Html.Raw($"@(Model.Dto.{item.ColumnName})")">
                     </div>
