@@ -107,7 +107,7 @@
                                 {
 @Html.Raw("                        {"+Environment.NewLine)
 @Html.Raw($"                            data: \"{item.ColumnName.ToLowerFirstLetter()}\","+Environment.NewLine)    
-@Html.Raw($"                            title: app.localize(\"{item.ColumnName}\"),"+Environment.NewLine)
+@Html.Raw($"                            title: app.localize(\"{Model.PageName}_{item.ColumnName}\"),"+Environment.NewLine)
 @Html.Raw($"                            render: function (data) {{return wimi.btl.dateTimeFormat(data);}}"+Environment.NewLine)
 @Html.Raw("                        },"+Environment.NewLine)
                                 }
@@ -115,7 +115,7 @@
                                 {
 @Html.Raw("                        {"+Environment.NewLine)
 @Html.Raw($"                            data: \"{item.ColumnName.ToLowerFirstLetter()}\","+Environment.NewLine)    
-@Html.Raw($"                            title: app.localize(\"{item.ColumnName}\")"+Environment.NewLine)               
+@Html.Raw($"                            title: app.localize(\"{Model.PageName}_{item.ColumnName}\")" +Environment.NewLine)               
 @Html.Raw("                        },"+Environment.NewLine)
                                 }
      }
