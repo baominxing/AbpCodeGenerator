@@ -84,7 +84,7 @@ namespace ABPCodeGenerator
             IConfigurationSection configurationSection = configurationRoot.GetSection("section1");
 
 
-            Console.WriteLine(configurationSection["key3"]);
+            Console.WriteLine(configurationSection["key322"]);
             Console.WriteLine(configurationSection["key4"]);
             Console.WriteLine(configurationSection["key5"]);
             Console.WriteLine(configurationSection["key6"]);
